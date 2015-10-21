@@ -1,0 +1,27 @@
+/* Media Modal page */
+.compat-item .field input[type="checkbox"] {
+	width: auto;
+}
+
+.term-list {
+	background-color: #fff;
+	border: 1px solid #dfdfdf;
+	border-radius: 3px;
+	padding: 10px 10px 5px;
+	margin: 0 0 10px;
+}
+
+.term-list li {
+	line-height: 22px;
+}
+.term-list li input[type="checkbox"] {
+	margin: -4px 4px 0 0 !important;
+}
+.term-list .children {
+	margin: 5px 0 0 20px;
+}
+
+/* Fix display attachment-filters */
+.media-frame select.attachment-filters {
+    max-width: 30%;
+}
