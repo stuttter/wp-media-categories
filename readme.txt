@@ -1,5 +1,5 @@
 === Plugin Name ===
-Contributors: johnjamesjacoby
+Contributors: johnjamesjacoby, stuttter
 Tags: media, library, attachment, category, categories, organizer, management, files
 Requires at least: 4.3
 Tested up to: 4.4
