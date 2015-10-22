@@ -1,0 +1,18 @@
+{
+  "name": "stuttter/wp-media-categories",
+  "description": "Categories for media & attachments",
+  "homepage": "https://github.com/stuttter/wp-media-categories",
+  "type": "wordpress-plugin",
+  "require": {
+    "php": ">=5.2",
+    "composer/installers": "^1.0"
+  },
+  "license": "GPLv2 or later",
+  "authors": [
+    {
+      "name": "John James Jacoby",
+      "email": "johnjamesjacoby@me.com"
+    }
+  ]
+}
+
