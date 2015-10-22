@@ -95,6 +95,13 @@ function wp_media_categories_restrict_manage_posts() {
 	wp_media_categories_add_category_filter();
 }
 
+/**
+ * Return URL to send the request back to
+ *
+ * @since 0.1.0
+ *
+ * @return string
+ */
 function wp_media_categories_create_sendback_url() {
 
 	// Create a sendback url to report the results
@@ -188,7 +195,7 @@ function wp_media_categories_get_terms_values( $keys = 'ids' ) {
 /**
  * Check the current action selected from the bulk actions dropdown.
  *
- * @since 3.1.0
+ * @since 0.1.0
  *
  * @return bool Whether 'bulk_toggle' was selected or not
  */
