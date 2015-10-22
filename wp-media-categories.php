@@ -3,7 +3,7 @@
 /**
  * Plugin Name: WP Media Categories
  * Plugin URI:  https://wordpress.org/plugins/wp-media-categories/
- * Description: A plugin to provide bulk category management functionality for media in WordPress sites.
+ * Description: Categories for media and attachments
  * Version:     0.1.0
  * Author:      John James Jacoby
  * Author URI:  https://profiles.wordpress.org/johnjamesjacoby/
