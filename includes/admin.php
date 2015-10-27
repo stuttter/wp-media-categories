@@ -38,8 +38,8 @@ function wp_media_categories_enqueue_admin_scripts() {
 		$attachment_terms = preg_replace( array( '/<select([^>]*)>/', '/<\/select>/' ), '', $attachment_terms );
 
 		// Add an attachment_terms for No category
-		$no_categories  = __( 'No categories',       'wp-media-categories' );
-		$all_categories = __( 'View all categories', 'wp-media-categories' );
+		$no_categories  = __( 'No categories',  'wp-media-categories' );
+		$all_categories = __( 'All categories', 'wp-media-categories' );
 		$no_category_term = ' ,{"term_id":"' . 'no_category' . '","term_name":"' . $no_categories . '"}';
 		$attachment_terms = $no_category_term . substr( $attachment_terms, 1 );
 

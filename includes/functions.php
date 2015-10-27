@@ -126,8 +126,8 @@ function wp_media_categories_get_media_category_options( $selected_value = '') {
 		'hierarchical'       => true,
 		'orderby'            => 'name',
 		'walker'             => new WP_Media_Categories_Filter_Walker(),
-		'show_option_all'    => __( 'View all categories', 'wp-media-categories' ),
-		'show_option_none'   => __( 'No categories',       'wp-media-categories' ),
+		'show_option_all'    => __( 'All categories', 'wp-media-categories' ),
+		'show_option_none'   => __( 'No categories',  'wp-media-categories' ),
 		'show_count'         => true,
 		'value'              => 'slug'
 	);
