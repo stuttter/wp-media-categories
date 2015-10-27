@@ -4,8 +4,8 @@ Tags: media, library, attachment, category, categories, organizer, management, f
 Requires at least: 4.3
 Tested up to: 4.4
 Stable tag: 0.1.0
-License: GPLv3
-License URI: https://www.gnu.org/licenses/gpl-3.0.html
+License: GPLv2
+License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
 Categories for media & attachments.
 
