@@ -3,14 +3,14 @@
 /**
  * Plugin Name: WP Media Categories
  * Plugin URI:  https://wordpress.org/plugins/wp-media-categories/
- * Description: Categories for media & attachments
- * Version:     0.1.0
  * Author:      John James Jacoby
  * Author URI:  https://profiles.wordpress.org/johnjamesjacoby/
+ * License:     GPL-2.0
+ * License URI: https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain: wp-media-categories
- * License:     GPL-3.0
- * License URI: https://www.gnu.org/licenses/gpl-3.0.html
  * Domain Path: /lang
+ * Description: Categories for media & attachments
+ * Version:     0.1.0
  */
 
 // Exit if accessed directly
