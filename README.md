@@ -12,7 +12,7 @@ Categories for media & attachments.
 
 ### Where can I get support?
 
-The WordPress support forums: https://wordpress.org/plugin/support/wp-media-categories/
+The WordPress support forums: https://wordpress.org/support/plugin/wp-media-categories/
 
 ### Can I contribute?
 
