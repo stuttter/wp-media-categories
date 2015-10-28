@@ -52,11 +52,11 @@ function wp_media_categories_enqueue_admin_scripts() {
 		echo '</script>';
 
 		// Script
-		wp_enqueue_script( 'wp-media-categories-media-views', $url . '/assets/js/media-views.js', array( 'media-views' ), $ver, true );
+		wp_enqueue_script( 'wp-media-categories-media-views', $url . 'assets/js/media-views.js', array( 'media-views' ), $ver, true );
 	}
 
 	// Styling
-	wp_enqueue_style( 'wp-media-categories-styling', $url . '/assets/css/admin.css', array(), $ver );
+	wp_enqueue_style( 'wp-media-categories-styling', $url . 'assets/css/admin.css', array(), $ver );
 }
 
 /**
