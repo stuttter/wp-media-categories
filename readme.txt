@@ -3,7 +3,7 @@ Contributors: johnjamesjacoby, stuttter
 Tags: media, library, attachment, category, categories, organizer, management, files
 Requires at least: 4.3
 Tested up to: 4.4
-Stable tag: 0.1.0
+Stable tag: 0.1.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=9Q4F4EL5YJ62J
@@ -56,6 +56,9 @@ The WordPress support forums: https://wordpress.org/support/plugin/wp-media-cate
 http://github.com/stuttter/wp-media-categories/
 
 == Changelog ==
+
+= 0.1.1 =
+* Improve media grid layout
 
 = 0.1.0 =
 * Initial release

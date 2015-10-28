@@ -60,4 +60,9 @@ window.wp = window.wp || { };
 			} );
 		}
 	} );
+
+	// Relocate the new dropdown
+	$( document ).ready( function() {
+		$( '.media-toolbar.wp-filter .select-mode-toggle-button' ).after( $('.media-toolbar.wp-filter .attachment-filters' ) );
+	} );
 } )( jQuery );
