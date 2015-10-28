@@ -63,6 +63,6 @@ window.wp = window.wp || { };
 
 	// Relocate the new dropdown
 	$( document ).ready( function() {
-		$( '.media-toolbar.wp-filter .select-mode-toggle-button' ).after( $('.media-toolbar.wp-filter .attachment-filters' ) );
+		$( '.media-toolbar.wp-filter .delete-selected-button' ).before( $('.media-toolbar.wp-filter .select-mode-toggle-button' ) );
 	} );
 } )( jQuery );
