@@ -309,6 +309,7 @@ function wp_media_categories_custom_bulk_action() {
 	$bulk_media_category_id = (int) $_REQUEST[ 'bulk_tax_id' ];
 
 	var_dump($_REQUEST);
+	die();
 	
 	// Process all media_id s found in the request
 	foreach ( ( array ) $_REQUEST[ 'media' ] as $media_id ) {
