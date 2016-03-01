@@ -317,13 +317,6 @@ function wp_media_categories_custom_bulk_action() {
 			continue;
 		}
 
-		echo "hi";
-		var_dump(has_term( $bulk_media_category_id, $media_taxonomy, $media_id));
-		var_dump($bulk_media_category_id);
-		var_dump($media_taxonomy);
-		var_dump($media_id);
-		die();
-
 		// Set so remove the $bulk_media_category taxonomy from this media post
 		if ( has_term( $bulk_media_category_id, $media_taxonomy, $media_id ) ) {
 			$bulk_result = wp_remove_object_terms( $media_id, $bulk_media_category_id, $media_taxonomy );
