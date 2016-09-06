@@ -267,8 +267,8 @@ function wp_media_categories_custom_bulk_admin_footer() {
 			// add bulk_actions for each category term
 			foreach ( $media_terms as $term ) {
 				$optionTxt = esc_js( __( 'Toggle', 'wp-media-categories' ) . ' ' . $term->name );
-				$wp_media_categories_footer_script .= " jQuery('<option>').val('" . 'bulk_toggle' . "').attr('option_slug','" . $term->slug . "').text('" . $optionTxt . "').appendTo(\"select[name='action']\");";
-				$wp_media_categories_footer_script .= " jQuery('<option>').val('" . 'bulk_toggle' . "').attr('option_slug','" . $term->slug . "').text('" . $optionTxt . "').appendTo(\"select[name='action2']\");";
+				$wp_media_categories_footer_script .= " jQuery('<option>').val('" . 'bulk_toggle' . "').attr('option_slug','" . $term->term_id . "').text('" . $optionTxt . "').appendTo(\"select[name='action']\");";
+				$wp_media_categories_footer_script .= " jQuery('<option>').val('" . 'bulk_toggle' . "').attr('option_slug','" . $term->term_id . "').text('" . $optionTxt . "').appendTo(\"select[name='action2']\");";
 			}
 
 			$wp_media_categories_footer_script .= '});';
