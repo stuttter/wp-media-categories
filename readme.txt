@@ -1,9 +1,9 @@
 === Plugin Name ===
 Contributors: johnjamesjacoby, stuttter
 Tags: media, library, attachment, category, categories, organizer, management, files
-Requires at least: 4.3
-Tested up to: 4.4
-Stable tag: 0.1.1
+Requires at least: 4.6
+Tested up to: 4.7
+Stable tag: 1.0.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=9Q4F4EL5YJ62J
@@ -57,8 +57,12 @@ http://github.com/stuttter/wp-media-categories/
 
 == Changelog ==
 
-= 0.1.1 =
+= [1.0.0] - 2016-09-06 =
+* Fix bulk edits
+* Move files into subdirectory for improved mu-plugins support
+
+= [0.1.1] - 2015-10-28 =
 * Improve media grid layout
 
-= 0.1.0 =
+= [0.1.1] - 2015-10-21 =
 * Initial release
