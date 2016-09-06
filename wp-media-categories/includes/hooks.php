@@ -28,5 +28,9 @@ add_action( 'wp_ajax_query-attachments', 'wp_media_categories_ajax_query_attachm
 
 // Some filters and action to process categories
 add_action( 'restrict_manage_posts', 'wp_media_categories_restrict_manage_posts' );
-add_filter( 'request',               'wp_media_categories_request'       );
-add_filter( 'pre_get_posts',         'wp_media_categories_pre_get_posts' );
+
+// Filter for `no_category` media category attachments list-table requests
+add_filter( 'request', 'wp_media_categories_no_category_request' );
+
+// Filter theme-side media category queries
+add_action( 'pre_get_posts', 'wp_media_categories_pre_get_posts' );
