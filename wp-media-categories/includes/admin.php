@@ -72,10 +72,17 @@ function wp_media_categories_add_category_filter() {
 		return;
 	}
 
-	// Get media taxonomy
+	// Looking at specific term
 	$selected_value = isset( $_GET[ 'term' ] )
 		? $_GET[ 'term' ]
-		: ''; ?>
+		: '';
+
+	// Maybe looking for attachments with no terms
+	if ( empty( $selected_value ) ) {
+		$selected_value = isset( $_GET[ 'media_category' ] )
+			? $_GET[ 'media_category' ]
+			: '';
+	} ?>
 
 	<label for="media_category" class="screen-reader-text"><?php esc_html_e( 'Filter by Category', 'wp-media-categories' ); ?></label>
 
