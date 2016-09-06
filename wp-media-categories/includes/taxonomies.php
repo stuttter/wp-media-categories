@@ -36,6 +36,11 @@ function wp_media_categories_register_media_taxonomy() {
 			'parent_item'		=> __( 'Parent Category',   'wp-media-categories' ),
 			'parent_item_colon'	=> __( 'Parent Category:',  'wp-media-categories' ),
 			'search_items'		=> __( 'Search Categories', 'wp-media-categories' )
+		),
+		'rewrite' => array(
+			'with_front'   => false,
+			'heirarchical' => true,
+			'slug'         => 'media-category'
 		)
 	) );
 }
