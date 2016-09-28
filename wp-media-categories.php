@@ -10,7 +10,7 @@
  * Text Domain: wp-media-categories
  * Domain Path: /wp-media-categories/lang
  * Description: Categories for media & attachments
- * Version:     1.0.1
+ * Version:     1.1.0
  */
 
 // Exit if accessed directly
