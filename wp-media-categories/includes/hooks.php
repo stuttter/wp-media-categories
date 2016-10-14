@@ -23,8 +23,14 @@ add_action( 'load-upload.php',			'wp_media_categories_custom_bulk_action' );
 add_action( 'add_attachment',  'wp_media_categories_set_attachment_category' );
 add_action( 'edit_attachment', 'wp_media_categories_set_attachment_category' );
 
-// Ajax
+// Set custom selector in media window
+add_filter('attachment_fields_to_edit','wp_media_attachment_fields',10,2);
+
+// filter the attachments from user dropdown
 add_action( 'wp_ajax_query-attachments', 'wp_media_categories_ajax_query_attachments', 0 );
+
+// update the categories
+add_action( 'wp_ajax_save-attachment-compat', 'wp_media_categories_ajax_update_attachment_taxonomies', 0 );
 
 // Some filters and action to process categories
 add_action( 'restrict_manage_posts', 'wp_media_categories_restrict_manage_posts' );
@@ -34,3 +40,6 @@ add_filter( 'request', 'wp_media_categories_no_category_request' );
 
 // Filter theme-side media category queries
 add_action( 'pre_get_posts', 'wp_media_categories_pre_get_posts' );
+
+// Add a shortcode to enable media_categories to be loaded into the default gallery shortcode
+add_shortcode( 'mc-gallery', 'wp_media_categories_register_gallery_shortcode' );

@@ -71,3 +71,57 @@ function wp_media_categories_ajax_query_attachments() {
 
 	wp_send_json_success( $posts );
 }
+
+
+/**
+ * Updating categories in a post
+ *
+ * @since 1.0.2
+ */
+function wp_media_categories_ajax_update_attachment_taxonomies() {
+
+	if ( ! isset( $_REQUEST['id'] ) ) {
+		wp_send_json_error();
+	}
+
+	if ( ! $id = absint( $_REQUEST['id'] ) ) {
+		wp_send_json_error();
+	}
+
+	if ( empty( $_REQUEST['attachments'] ) || empty( $_REQUEST['attachments'][ $id ] ) ) {
+		wp_send_json_error();
+	}
+	$attachment_data = $_REQUEST['attachments'][ $id ];
+
+	check_ajax_referer( 'update-post_' . $id, 'nonce' );
+
+	if ( ! current_user_can( 'edit_post', $id ) ) {
+		wp_send_json_error();
+	}
+
+	$post = get_post( $id, ARRAY_A );
+
+	if ( 'attachment' != $post['post_type'] ) {
+		wp_send_json_error();
+	}
+
+	$post = apply_filters( 'attachment_fields_to_save', $post, $attachment_data );
+
+	wp_update_post( $post );
+
+	$taxonomy = "media_category";
+
+	if ( isset( $attachment_data[ $taxonomy ] ) ) {
+		wp_set_object_terms( $id, array_map( 'trim', preg_split( '/,+/', $attachment_data[ $taxonomy ] ) ), $taxonomy, false );
+	} else if ( isset($_REQUEST['tax_input']) && isset( $_REQUEST['tax_input'][ $taxonomy ] ) ) {
+		wp_set_object_terms( $id, $_REQUEST['tax_input'][ $taxonomy ], $taxonomy, false );
+	} else {
+		wp_set_object_terms( $id, '', $taxonomy, false );
+	}
+
+	if ( ! $attachment = wp_prepare_attachment_for_js( $id ) ) {
+		wp_send_json_error();
+	}
+
+	wp_send_json_success( $attachment );
+}

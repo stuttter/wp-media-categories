@@ -177,3 +177,88 @@ function wp_media_categories_pre_get_posts( WP_Query $query ) {
 		}
 	}
 }
+
+/**
+ * Fired on attachment update
+ *
+ * @since  1.0.2
+ *
+ * @param $fields The existing fields
+ * @param WP_POST $post The post
+ */
+function wp_media_attachment_fields($fields,$post) {
+	$tx = "media_category";
+	$t = $fields[$tx];
+	$taxonomy = $t["name"];
+	if (!empty($t)) {
+		if ( ! $t['public'] || ! $t['show_ui'] ) {
+			continue;
+		}
+		if ( empty($t['args']) ) {
+			$t['args'] = array();
+		}
+
+		$terms = wp_get_object_terms($post->ID, $taxonomy, $t['args']);
+		$values = array();
+
+		foreach ( $terms as $term ) {
+			$values[] = $term->slug;
+		}
+
+		$t['value'] = join(', ', $values);
+		if ( $t['hierarchical'] ) {
+			ob_start();
+			wp_terms_checklist( $post->ID, array( 'taxonomy' => "media_category", 'checked_ontop' => false, 'walker' => new WP_Media_Categories_Checklist_Walker() ) );
+			if ( ob_get_contents() != false ) {
+				$html = '<ul class="term-list">' . ob_get_contents() . '</ul>';
+			} else {
+				$html = '<ul class="term-list"><li>No ' . $t['label'] . '</li></ul>';
+			}
+			ob_end_clean();
+			$t['input'] = 'html';
+			$t['html'] = $html;
+		}
+		$form_fields[$taxonomy] = $t;
+	}
+	return $form_fields;
+}
+
+/**
+ * Get IDs of all attached to a media category and pass them through to the default gallery shortcode for rendering
+ *
+ * @since  1.0.2
+ *
+ * @param $args Arguments from shortcode
+ */
+
+function wp_media_categories_register_gallery_shortcode($args) {
+	//ensure there's a category attribute
+	if (isset($args["category"])) {
+		$category = $args["category"];
+		unset($args["category"]);
+		//ensure the taxonomy exists
+		$taxon = get_term_by('slug', $category, "media_category" );
+		if ($taxon === false) {
+			return;
+		}
+		$query = array(
+    	'post_status' => 'inherit',
+			'posts_per_page' => -1,
+			'post_type' => 'attachment',
+			'tax_query' => array(
+				array(
+				    'taxonomy' => 'media_category',
+				    'terms' => array($category),
+				    'field' => 'slug',
+				)
+			)
+		);
+		$the_query = new WP_Query( $query );
+		$p = $the_query->get_posts();
+		if (isset($p) && !empty($p)) {
+			$ids = array(); foreach ($p as $post) { $ids[] = $post->ID;	}
+		}
+		$args["include"] = implode(",",$ids);
+		return gallery_shortcode($args);
+	}
+}
