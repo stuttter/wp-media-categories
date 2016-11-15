@@ -4,7 +4,7 @@
  * Plugin Name: WP Media Categories
  * Plugin URI:  https://wordpress.org/plugins/wp-media-categories/
  * Author:      John James Jacoby
- * Author URI:  http://jjj.me/
+ * Author URI:  https://jjj.blog/
  * License:     GPL v2 or later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain: wp-media-categories
