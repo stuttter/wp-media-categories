@@ -10,7 +10,7 @@
  * Text Domain: wp-media-categories
  * Domain Path: /wp-media-categories/lang
  * Description: Categories for media & attachments
- * Version:     1.1.0
+ * Version:     2.0.0
  */
 
 // Exit if accessed directly
@@ -38,7 +38,7 @@ function _wp_media_categories() {
 add_action( 'plugins_loaded', '_wp_media_categories' );
 
 /**
- * Return the plugin's URL
+ * Return the plugin URL
  *
  * @since 0.1.0
  *
@@ -56,5 +56,5 @@ function wp_media_categories_get_plugin_url() {
  * @return int
  */
 function wp_media_categories_get_asset_version() {
-	return 201609060002;
+	return 201806050001;
 }

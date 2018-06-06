@@ -30,7 +30,7 @@ function wp_media_categories_update_count_callback( $terms = array(), $media_tax
 						WHERE taxonomy = %s
 				)) AS unioncount GROUP BY term_taxonomy_id";
 
-	$prepared = $wpdb->prepare( $sql, 'media_category', 'media_category' );
+	$prepared = $wpdb->prepare( $sql, $media_taxonomy->name, $media_taxonomy->name );
 	$count    = $wpdb->get_results( $prepared );
 
 	// update all count values from taxonomy

@@ -1,6 +1,15 @@
 <?php
 
 /**
+ * Media Categories AJAX
+ *
+ * @package Media/Categories/AJX
+ */
+
+// Exit if accessed directly
+defined( 'ABSPATH' ) || exit;
+
+/**
  * Changing categories in the grid view
  *
  * @since 0.1.0
