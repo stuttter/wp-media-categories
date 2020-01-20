@@ -66,3 +66,57 @@ window.wp = window.wp || { };
 		$( '.media-toolbar.wp-filter .delete-selected-button' ).before( $('.media-toolbar.wp-filter .select-mode-toggle-button' ) );
 	} );
 } )( jQuery );
+
+/* (c) Ian Dickety */
+/*
+* save-attachment-compat doesn't do as save-attachment does, in that
+* while it pings ajax upon updating, there is no feedback to tell
+* the user the input has been saved. This snippet provides feedback (loading/succesful only)
+*/
+
+jQuery(function($) {
+	$('#wpcontent').ajaxSend(function(e,r,s) {
+		var input = QueryStringToHash(s.data);
+		if (input.action == "save-attachment-compat") {
+			$( '.attachment-details ').removeClass('save-ready').addClass('save-waiting');
+		}
+	});
+
+	$('#wpcontent').ajaxComplete(function(e,r,s) {
+		var input = QueryStringToHash(s.data);
+		if (input.action == "save-attachment-compat") {
+			$( '.attachment-details ').removeClass('save-waiting');
+			if (r.responseJSON.success === true) {
+				$( '.attachment-details ').addClass("save-complete").delay(2000).queue(function(next){
+					$(this).removeClass("save-complete").addClass("save-ready");
+					next();
+				});
+			} else {
+				$( '.attachment-details ').addClass("save-ready");
+			}
+		}
+	});
+
+	var QueryStringToHash = function QueryStringToHash (query) {
+		var query_string = {};
+		var vars = query.split("&");
+		for (var i=0;i<vars.length;i++) {
+			var pair = vars[i].split("=");
+			pair[0] = decodeURIComponent(pair[0]);
+			pair[1] = decodeURIComponent(pair[1]);
+				// If first entry with this name
+			if (typeof query_string[pair[0]] === "undefined") {
+				query_string[pair[0]] = pair[1];
+				// If second entry with this name
+			} else if (typeof query_string[pair[0]] === "string") {
+				var arr = [ query_string[pair[0]], pair[1] ];
+				query_string[pair[0]] = arr;
+				// If third or later entry with this name
+			} else {
+				query_string[pair[0]].push(pair[1]);
+			}
+		}
+		return query_string;
+	}
+
+});
