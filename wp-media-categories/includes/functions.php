@@ -183,44 +183,78 @@ function wp_media_categories_pre_get_posts( WP_Query $query ) {
  *
  * @since  1.0.2
  *
- * @param $fields The existing fields
- * @param WP_POST $post The post
+ * @param array  $fields The existing fields
+ * @param object $post   The post
+ *
+ * @return array
  */
-function wp_media_attachment_fields($fields,$post) {
-	$tx = "media_category";
-	$t = $fields[$tx];
-	$taxonomy = $t["name"];
-	if (!empty($t)) {
-		if ( ! $t['public'] || ! $t['show_ui'] ) {
-			continue;
-		}
-		if ( empty($t['args']) ) {
-			$t['args'] = array();
-		}
+function wp_media_attachment_fields( $fields = array(), $post = false ) {
 
-		$terms = wp_get_object_terms($post->ID, $taxonomy, $t['args']);
-		$values = array();
-
-		foreach ( $terms as $term ) {
-			$values[] = $term->slug;
-		}
-
-		$t['value'] = join(', ', $values);
-		if ( $t['hierarchical'] ) {
-			ob_start();
-			wp_terms_checklist( $post->ID, array( 'taxonomy' => "media_category", 'checked_ontop' => false, 'walker' => new WP_Media_Categories_Checklist_Walker() ) );
-			if ( ob_get_contents() != false ) {
-				$html = '<ul class="term-list">' . ob_get_contents() . '</ul>';
-			} else {
-				$html = '<ul class="term-list"><li>No ' . $t['label'] . '</li></ul>';
-			}
-			ob_end_clean();
-			$t['input'] = 'html';
-			$t['html'] = $html;
-		}
-		$form_fields[$taxonomy] = $t;
+	// Bail if not a media category
+	if ( empty( $fields[ 'media_category' ] ) ) {
+		return $fields;
 	}
-	return $form_fields;
+
+	// Get the media category taxonomy
+	$t = $fields[ 'media_category' ];
+
+	// Bail if not public or no UI
+	if ( empty( $t[ 'public' ] ) || empty( $t[ 'show_ui' ] ) ) {
+		return $fields;
+	}
+
+	if ( empty( $t[ 'args' ] ) ) {
+		$t[ 'args' ] = array();
+	}
+
+	// Get the taxonomy name to improve code readibility later
+	$taxonomy = $t[ 'name' ];
+
+	// Query for terms
+	$terms = wp_get_object_terms( $post->ID, $taxonomy, $t[ 'args' ] );
+
+	// Bail if no terms
+	if ( empty( $terms ) ) {
+		return $fields;
+	}
+
+	// Pluck the slugs
+	$values = wp_list_pluck( $terms, 'slug' );
+
+	// Add the values
+	$t[ 'value' ] = join( ', ', $values );
+
+	// Hierarchical taxonomies get special care
+	if ( ! empty( $t[ 'hierarchical' ] ) ) {
+
+		// Start an output buffer for the hierarchical checklist
+		ob_start();
+
+		// Output the checklist
+		wp_terms_checklist( $post->ID, array(
+			'taxonomy'      => 'media_category',
+			'checked_ontop' => false,
+			'walker'        => new WP_Media_Categories_Checklist_Walker()
+		) );
+
+		// Get the output buffer contents
+		$contents = ob_get_clean();
+
+		// Decide what the HTML will be
+		$html = ( false !== $contents )
+			? '<ul class="term-list">' . $contents . '</ul>'
+			: '<ul class="term-list"><li>' . sprintf( esc_html__( 'No %s', 'wp-media-categories' ), $t[ 'label' ] ) . '</li></ul>';
+
+		// Setup the new fields
+		$t[ 'input' ] = 'html';
+		$t[ 'html' ]  = $html;
+	}
+
+	// Add these fields to the attachment fields array
+	$fields[ $taxonomy ] = $t;
+
+	// Return fields
+	return $fields;
 }
 
 /**
@@ -230,35 +264,55 @@ function wp_media_attachment_fields($fields,$post) {
  *
  * @param $args Arguments from shortcode
  */
+function wp_media_categories_register_gallery_shortcode( $args = array() ) {
 
-function wp_media_categories_register_gallery_shortcode($args) {
-	//ensure there's a category attribute
-	if (isset($args["category"])) {
-		$category = $args["category"];
-		unset($args["category"]);
-		//ensure the taxonomy exists
-		$taxon = get_term_by('slug', $category, "media_category" );
-		if ($taxon === false) {
-			return;
-		}
-		$query = array(
-    	'post_status' => 'inherit',
-			'posts_per_page' => -1,
-			'post_type' => 'attachment',
-			'tax_query' => array(
-				array(
-				    'taxonomy' => 'media_category',
-				    'terms' => array($category),
-				    'field' => 'slug',
-				)
-			)
-		);
-		$the_query = new WP_Query( $query );
-		$p = $the_query->get_posts();
-		if (isset($p) && !empty($p)) {
-			$ids = array(); foreach ($p as $post) { $ids[] = $post->ID;	}
-		}
-		$args["include"] = implode(",",$ids);
-		return gallery_shortcode($args);
+	// Default return value
+	$retval = '';
+
+	// Bail if no category attribute
+	if ( empty( $args[ 'category' ] ) ) {
+		return $retval;
 	}
+
+	// Juggle the Category out
+	$category = $args[ 'category' ];
+	unset( $args[ 'category' ] );
+
+	// Bail if Category does not exist
+	$cat = get_term_by( 'slug', $category, 'media_category' );
+	if ( false === $cat ) {
+		return $retval;
+	}
+
+	// Default query arguments
+	$query = array(
+		'post_status'    => 'inherit',
+		'posts_per_page' => -1,
+		'post_type'      => 'attachment',
+		'tax_query'      => array(
+			array(
+				'taxonomy' => 'media_category',
+				'terms'    => array( $category ),
+				'field'    => 'slug',
+			)
+		)
+	);
+
+	// Query for the posts
+	$the_query = new WP_Query( $query );
+	$posts     = $the_query->get_posts();
+
+	// Get the IDs
+	if ( ! empty( $posts ) ) {
+		$ids = wp_parse_id_list( $posts );
+	}
+
+	// IDs to include
+	$args[ 'include' ] = implode( ',', $ids );
+
+	// Return the shortcode
+	$retval = gallery_shortcode( $args );
+
+	// Return the results
+	return $retval;
 }

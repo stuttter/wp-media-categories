@@ -24,7 +24,7 @@ add_action( 'add_attachment',  'wp_media_categories_set_attachment_category' );
 add_action( 'edit_attachment', 'wp_media_categories_set_attachment_category' );
 
 // Set custom selector in media window
-add_filter('attachment_fields_to_edit','wp_media_attachment_fields',10,2);
+add_filter( 'attachment_fields_to_edit', 'wp_media_attachment_fields', 10, 2 );
 
 // filter the attachments from user dropdown
 add_action( 'wp_ajax_query-attachments', 'wp_media_categories_ajax_query_attachments', 0 );
