@@ -1,9 +1,10 @@
 === Plugin Name ===
 Contributors: johnjamesjacoby, stuttter
 Tags: media, library, attachment, category, categories, organizer, management, files
-Requires at least: 4.6
-Tested up to: 4.9
-Stable tag: 2.0.0
+Requires PHP: 7.0
+Requires at least: 5.0
+Tested up to: 5.4
+Stable tag: 2.1.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=9Q4F4EL5YJ62J
@@ -20,7 +21,6 @@ Add categories to media & attachments.
 = Also checkout =
 
 * [WP Chosen](https://wordpress.org/plugins/wp-chosen/ "Make long, unwieldy select boxes much more user-friendly.")
-* [WP Event Calendar](https://wordpress.org/plugins/wp-event-calendar/ "The best way to manage events in WordPress.")
 * [WP Term Order](https://wordpress.org/plugins/wp-term-order/ "Sort taxonomy terms, your way.")
 * [WP Term Authors](https://wordpress.org/plugins/wp-term-authors/ "Authors for categories, tags, and other taxonomy terms.")
 * [WP Term Colors](https://wordpress.org/plugins/wp-term-colors/ "Pretty colors for categories, tags, and other taxonomy terms.")
@@ -30,6 +30,7 @@ Add categories to media & attachments.
 * [WP User Activity](https://wordpress.org/plugins/wp-user-activity/ "The best way to log activity in WordPress.")
 * [WP User Avatars](https://wordpress.org/plugins/wp-user-avatars/ "Allow users to upload avatars or choose them from your media library.")
 * [WP User Profiles](https://wordpress.org/plugins/wp-user-profiles/ "A sophisticated way to edit users in WordPress.")
+* [WP User Signups](https://wordpress.org/plugins/wp-user-signups/ "A sophisticated way to edit users in WordPress.")
 
 == Installation ==
 
@@ -55,6 +56,10 @@ The WordPress support forums: https://wordpress.org/support/plugin/wp-media-cate
 http://github.com/stuttter/wp-media-categories/
 
 == Changelog ==
+
+= [2.1.0] - 2020-05-13 =
+* Improve compatibility with PHP7.2+
+* Improve shortcode implementation
 
 = [2.0.0] - 2018-06-05 =
 * Fix bug where count could target wrong taxonomy
