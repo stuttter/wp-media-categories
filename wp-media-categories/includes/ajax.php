@@ -134,3 +134,40 @@ function wp_media_categories_ajax_update_attachment_taxonomies() {
 
 	wp_send_json_success( $attachment );
 }
+
+function wp_media_categories_ajax_filter_query( $query ) {
+
+    // Get names of media taxonomies
+    $taxonomies = get_object_taxonomies( 'attachment', 'names' );
+
+    $query[ 'tax_query' ] = array( 'relation' => 'AND' );
+
+    foreach ( $taxonomies as $taxonomy ) {
+        if ( isset( $query[ $taxonomy ] ) ) {
+
+            // Filter a specific category
+            if ( is_numeric( $query[ $taxonomy ] ) ) {
+                array_push( $query[ 'tax_query' ], array(
+                    'taxonomy' => $taxonomy,
+                    'field' => 'id',
+                    'terms' => $query[ $taxonomy ]
+                ) );
+            }
+
+            // Filter No category
+            if ( $query[ $taxonomy ] == 'no_category' ) {
+                $all_terms_ids = wp_media_categories_get_terms_values( 'ids' );
+                array_push( $query[ 'tax_query' ], array(
+                    'taxonomy' => $taxonomy,
+                    'field' => 'id',
+                    'terms' => $all_terms_ids,
+                    'operator' => 'NOT IN',
+                ) );
+            }
+        }
+
+        unset( $query[ $taxonomy ] );
+    }
+    
+    return $query;
+}
