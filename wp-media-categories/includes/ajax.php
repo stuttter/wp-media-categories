@@ -135,6 +135,16 @@ function wp_media_categories_ajax_update_attachment_taxonomies() {
 	wp_send_json_success( $attachment );
 }
 
+/**
+ * Filters the media query to include taxonomy queries for attachments.
+ *
+ * Adds tax_query arguments to the media query based on taxonomy filters provided.
+ *
+ * @since 1.0.2
+ *
+ * @param array $query The original media query arguments.
+ * @return array Modified media query arguments with taxonomy filters applied.
+ */
 function wp_media_categories_ajax_filter_query( $query ) {
 
     // Get names of media taxonomies
