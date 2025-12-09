@@ -14,8 +14,15 @@ defined( 'ABSPATH' ) || exit;
  *
  * @since 0.1.0
  */
-function wp_media_categories_update_count_callback( $terms = array(), $media_taxonomy = 'media_category' ) {
+function wp_media_categories_update_count_callback( $terms = array(), $media_taxonomy = null ) {
 	global $wpdb;
+
+	// Get taxonomy name - handle both object and string for backward compatibility
+	if ( is_object( $media_taxonomy ) ) {
+		$taxonomy_name = $media_taxonomy->name;
+	} else {
+		$taxonomy_name = $media_taxonomy ? $media_taxonomy : 'media_category';
+	}
 
 	// select id & count from taxonomy
 	$sql = "SELECT term_taxonomy_id, MAX(total) AS total FROM ((
@@ -30,7 +37,7 @@ function wp_media_categories_update_count_callback( $terms = array(), $media_tax
 						WHERE taxonomy = %s
 				)) AS unioncount GROUP BY term_taxonomy_id";
 
-	$prepared = $wpdb->prepare( $sql, $media_taxonomy->name, $media_taxonomy->name );
+	$prepared = $wpdb->prepare( $sql, $taxonomy_name, $taxonomy_name );
 	$count    = $wpdb->get_results( $prepared );
 
 	// update all count values from taxonomy
