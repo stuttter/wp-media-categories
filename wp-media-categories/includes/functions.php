@@ -13,6 +13,10 @@ defined( 'ABSPATH' ) || exit;
  * Custom update_count_callback
  *
  * @since 0.1.0
+ *
+ * @param array                $terms         Array of term IDs.
+ * @param object|string|null   $media_taxonomy Taxonomy object (from WordPress core),
+ *                                             taxonomy name string, or null to use default 'media_category'.
  */
 function wp_media_categories_update_count_callback( $terms = array(), $media_taxonomy = null ) {
 	global $wpdb;
