@@ -167,7 +167,7 @@ function wp_media_categories_ajax_filter_query( $query ) {
             }
 
             // Filter No category
-            if ( $query[ $taxonomy ] == 'no_category' ) {
+            if ( $query[ $taxonomy ] === 'no_category' ) {
                 $all_terms_ids = wp_media_categories_get_terms_values( 'ids' );
                 array_push( $query[ 'tax_query' ], array(
                     'taxonomy' => $taxonomy,
