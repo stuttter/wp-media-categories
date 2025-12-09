@@ -150,7 +150,9 @@ function wp_media_categories_ajax_filter_query( $query ) {
     // Get names of media taxonomies
     $taxonomies = get_object_taxonomies( 'attachment', 'names' );
 
-    $query[ 'tax_query' ] = array( 'relation' => 'AND' );
+    if ( ! isset( $query['tax_query'] ) ) {
+        $query['tax_query'] = array( 'relation' => 'AND' );
+    }
 
     foreach ( $taxonomies as $taxonomy ) {
         if ( isset( $query[ $taxonomy ] ) ) {
