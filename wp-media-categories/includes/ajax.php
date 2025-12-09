@@ -180,6 +180,5 @@ function wp_media_categories_ajax_filter_query( $query ) {
 
         unset( $query[ $taxonomy ] );
     }
-    
     return $query;
 }
