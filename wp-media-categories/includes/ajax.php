@@ -78,7 +78,11 @@ function wp_media_categories_ajax_query_attachments() {
 	$posts = array_map( 'wp_prepare_attachment_for_js', $query->posts );
 	$posts = array_filter( $posts );
 
-	wp_send_json_success( $posts );
+	wp_send_json_success( array(
+		'posts'         => $posts,
+		'total'         => $query->found_posts,
+		'max_num_pages' => $query->max_num_pages
+	) );
 }
 
 
