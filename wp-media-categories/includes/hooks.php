@@ -27,7 +27,10 @@ add_action( 'edit_attachment', 'wp_media_categories_set_attachment_category' );
 add_filter( 'attachment_fields_to_edit', 'wp_media_attachment_fields', 10, 2 );
 
 // filter the attachments from user dropdown
-add_action( 'wp_ajax_query-attachments', 'wp_media_categories_ajax_query_attachments', 0 );
+//add_action( 'wp_ajax_query-attachments', 'wp_media_categories_ajax_query_attachments', 0 );
+
+// filter the attachments from user dropdown by only filtering query
+add_filter( 'ajax_query_attachments_args', 'wp_media_categories_ajax_filter_query' );
 
 // update the categories
 add_action( 'wp_ajax_save-attachment-compat', 'wp_media_categories_ajax_update_attachment_taxonomies', 0 );
