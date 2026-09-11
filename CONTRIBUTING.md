@@ -1,0 +1,29 @@
+# Contributing
+
+Thanks for helping maintain WP Media Categories.
+
+## Before changing behavior
+
+Describe the observable behavior, compatibility expectations, and acceptance
+criteria in a GitHub issue. Security reports belong in the private reporting
+channel described in `SECURITY.md`.
+
+## Pull requests
+
+- Keep each pull request focused and reversible.
+- Add regression coverage for behavior changes and bug fixes.
+- Preserve the declared PHP and WordPress minimum versions.
+- Exercise both list and grid media-library views when changing filters.
+- Identify taxonomy, attachment, capability, nonce, database, and release impact.
+- Do not commit credentials, build caches, development databases, or generated
+  release ZIP files.
+- Wait for every required check and resolve review conversations before merge.
+
+AI-assisted contributions are welcome, but the contributor remains responsible
+for understanding and validating the result.
+
+## Development requirements
+
+The shipped plugin supports PHP 7.0. Its Composer development toolchain requires
+PHP 7.2 or newer because maintained PHPUnit releases no longer run on PHP 7.0.
+Production Composer installs should omit development dependencies.
