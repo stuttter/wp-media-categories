@@ -10,6 +10,9 @@
  * Text Domain: wp-media-categories
  * Domain Path: /wp-media-categories/lang
  * Description: Categories for media & attachments
+ * Requires at least: 5.0
+ * Requires PHP: 7.0
+ * Tested up to: 5.4
  * Version:     2.1.0
  */
 

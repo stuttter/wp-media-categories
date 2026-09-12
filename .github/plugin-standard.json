@@ -1,0 +1,20 @@
+{
+  "$schema": "https://raw.githubusercontent.com/stuttter/.github/main/schema/plugin-standard.schema.json",
+  "slug": "wp-media-categories",
+  "main_file": "wp-media-categories.php",
+  "risk": "elevated",
+  "minimum_php": "7.0",
+  "minimum_wordpress": "5.0",
+  "tested_wordpress": "5.4",
+  "wordpress_org": true,
+  "multisite": false,
+  "release_branch": "master",
+  "php_matrix": [
+    "7.0",
+    "7.2",
+    "7.4",
+    "8.0",
+    "8.2",
+    "8.4"
+  ]
+}
