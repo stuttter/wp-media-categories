@@ -24,6 +24,5 @@ for understanding and validating the result.
 
 ## Development requirements
 
-The shipped plugin supports PHP 7.0. Its Composer development toolchain requires
-PHP 7.2 or newer because maintained PHPUnit releases no longer run on PHP 7.0.
-Production Composer installs should omit development dependencies.
+The shipped plugin and its Composer development toolchain require PHP 7.4 or
+newer. Production Composer installs should omit development dependencies.
