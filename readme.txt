@@ -1,7 +1,7 @@
 === Plugin Name ===
 Contributors: johnjamesjacoby, stuttter
 Tags: media, library, attachment, category, categories, organizer, management, files
-Requires PHP: 7.0
+Requires PHP: 7.4
 Requires at least: 5.0
 Tested up to: 5.4
 Stable tag: 2.1.0

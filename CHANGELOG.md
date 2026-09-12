@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Require PHP 7.4 or newer
 - Correct attachment-query pagination metadata
 - Preserve media-library loading behavior introduced in WordPress 5.8
 - Accept taxonomy names and taxonomy objects in the count callback
