@@ -29,8 +29,9 @@ newer. Production Composer installs should omit development dependencies.
 
 ## Real WordPress smoke test
 
-The shared portfolio workflow loads `tests/integration/smoke.php` after the
-production build is activated in an isolated single-site WordPress environment.
+The planned shared portfolio workflow will load `tests/integration/smoke.php`
+after the production build is activated in an isolated single-site WordPress
+environment.
 The smoke test checks taxonomy registration, attachment term persistence,
 custom term counts, and a real attachment query against the oldest supported
 WordPress version, current stable WordPress, and WordPress trunk. Keep this
