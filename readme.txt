@@ -4,7 +4,7 @@ Tags: media, library, attachments, categories, organization
 Requires PHP: 7.4
 Requires at least: 5.0
 Tested up to: 7.1
-Stable tag: 2.1.0
+Stable tag: 2.2.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=9Q4F4EL5YJ62J
@@ -58,6 +58,19 @@ The WordPress support forums: https://wordpress.org/support/plugin/wp-media-cate
 http://github.com/stuttter/wp-media-categories/
 
 == Changelog ==
+
+= [2.2.0] - 2026-09-14 =
+* Require the Media Library bulk-action nonce before changing attachment categories (CVE-2025-60134)
+* Require PHP 7.4 or newer
+* Correct attachment-query pagination metadata
+* Preserve media-library loading behavior introduced in WordPress 5.8
+* Accept taxonomy names and taxonomy objects in the count callback
+* Use prepared count queries and current taxonomy-query signatures
+* Preserve percent-encoded and non-Latin category slugs in Media Library filters and redirects
+* Keep bulk category actions available through the current WordPress footer-script lifecycle
+* Harden Media Library and widget data for their HTML and JavaScript output contexts
+* Reject malformed bulk-action values without PHP 8 type errors
+* Correct category-widget redirect URLs containing ampersands
 
 = [2.1.0] - 2020-05-13 =
 * Improve compatibility with PHP7.2+
