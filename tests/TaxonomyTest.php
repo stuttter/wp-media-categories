@@ -17,8 +17,8 @@ if ( ! function_exists( 'wp_unslash' ) ) {
 }
 
 if ( ! function_exists( 'wp_json_encode' ) ) {
-	function wp_json_encode( $value ) {
-		return json_encode( $value, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT );
+	function wp_json_encode( $value, $options = 0 ) {
+		return json_encode( $value, $options );
 	}
 }
 

@@ -64,7 +64,8 @@ class WP_Media_Categories_Media_Grid_Walker extends Walker_CategoryDropdown {
 			array(
 				'term_id'   => (string) absint( $category->term_id ),
 				'term_name' => $term_name,
-			)
+			),
+			JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT
 		);
 	}
 }

@@ -40,7 +40,7 @@ function wp_media_categories_enqueue_admin_scripts() {
 		// Script
 		wp_enqueue_script( 'wp-media-categories-media-views', $url . 'assets/js/media-views.js', array( 'media-views' ), $ver, true );
 
-		$attachment_terms = json_decode( '[' . ltrim( $attachment_terms, ',' ) . ']', true );
+		$attachment_terms = json_decode( '[' . ltrim( $attachment_terms, " \t\n\r\0\x0B," ) . ']', true );
 		if ( ! is_array( $attachment_terms ) ) {
 			$attachment_terms = array();
 		}
@@ -62,7 +62,7 @@ function wp_media_categories_enqueue_admin_scripts() {
 
 		wp_add_inline_script(
 			'wp-media-categories-media-views',
-			'var wp_media_categories_taxonomies = ' . wp_json_encode( $taxonomy_data ) . ';',
+			'var wp_media_categories_taxonomies = ' . wp_json_encode( $taxonomy_data, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT ) . ';',
 			'before'
 		);
 	}
@@ -86,13 +86,13 @@ function wp_media_categories_add_category_filter() {
 
 	// Looking at specific term
 	$selected_value = isset( $_GET['term'] )
-		? sanitize_key( wp_unslash( $_GET['term'] ) )
+		? sanitize_title( wp_unslash( $_GET['term'] ) )
 		: '';
 
 	// Maybe looking for attachments with no terms
 	if ( empty( $selected_value ) ) {
 		$selected_value = isset( $_GET['media_category'] )
-			? sanitize_key( wp_unslash( $_GET['media_category'] ) )
+			? sanitize_title( wp_unslash( $_GET['media_category'] ) )
 			: '';
 	} ?>
 
@@ -169,7 +169,7 @@ function wp_media_categories_create_sendback_url() {
 
 	// Get media taxonomy
 	if ( isset( $_REQUEST['media_category'] ) ) {
-		$sendback = add_query_arg( 'media_category', sanitize_key( wp_unslash( $_REQUEST['media_category'] ) ), $sendback );
+		$sendback = add_query_arg( 'media_category', sanitize_title( wp_unslash( $_REQUEST['media_category'] ) ), $sendback );
 	}
 
 	return $sendback;
