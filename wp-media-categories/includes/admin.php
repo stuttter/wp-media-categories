@@ -37,22 +37,34 @@ function wp_media_categories_enqueue_admin_scripts() {
 		// No select
 		$attachment_terms = preg_replace( array( '/<select([^>]*)>/', '/<\/select>/' ), '', $attachment_terms );
 
-		// Add an attachment_terms for No category
-		$no_categories  = __( 'No categories',  'wp-media-categories' );
-		$all_categories = __( 'All categories', 'wp-media-categories' );
-		$no_category_term = ' ,{"term_id":"' . 'no_category' . '","term_name":"' . $no_categories . '"}';
-		$attachment_terms = $no_category_term . substr( $attachment_terms, 1 );
-
-		echo '<script type="text/javascript">';
-		echo '/* <![CDATA[ */';
-		echo 'var wp_media_categories_taxonomies = {"' . 'media_category' . '":';
-		echo     '{"list_title":"' . html_entity_decode( $all_categories, ENT_QUOTES, 'UTF-8' ) . '",';
-		echo       '"term_list":[' . substr( $attachment_terms, 2 ) . ']}};';
-		echo '/* ]]> */';
-		echo '</script>';
-
 		// Script
 		wp_enqueue_script( 'wp-media-categories-media-views', $url . 'assets/js/media-views.js', array( 'media-views' ), $ver, true );
+
+		$attachment_terms = json_decode( '[' . ltrim( $attachment_terms, ',' ) . ']', true );
+		if ( ! is_array( $attachment_terms ) ) {
+			$attachment_terms = array();
+		}
+
+		array_unshift(
+			$attachment_terms,
+			array(
+				'term_id'   => 'no_category',
+				'term_name' => __( 'No categories', 'wp-media-categories' ),
+			)
+		);
+
+		$taxonomy_data = array(
+			'media_category' => array(
+				'list_title' => __( 'All categories', 'wp-media-categories' ),
+				'term_list'  => $attachment_terms,
+			),
+		);
+
+		wp_add_inline_script(
+			'wp-media-categories-media-views',
+			'var wp_media_categories_taxonomies = ' . wp_json_encode( $taxonomy_data ) . ';',
+			'before'
+		);
 	}
 
 	// Styling
@@ -73,14 +85,14 @@ function wp_media_categories_add_category_filter() {
 	}
 
 	// Looking at specific term
-	$selected_value = isset( $_GET[ 'term' ] )
-		? $_GET[ 'term' ]
+	$selected_value = isset( $_GET['term'] )
+		? sanitize_key( wp_unslash( $_GET['term'] ) )
 		: '';
 
 	// Maybe looking for attachments with no terms
 	if ( empty( $selected_value ) ) {
-		$selected_value = isset( $_GET[ 'media_category' ] )
-			? $_GET[ 'media_category' ]
+		$selected_value = isset( $_GET['media_category'] )
+			? sanitize_key( wp_unslash( $_GET['media_category'] ) )
 			: '';
 	} ?>
 
@@ -121,56 +133,43 @@ function wp_media_categories_create_sendback_url() {
 	$sendback = remove_query_arg( array( 'action', 'action2', 'tags_input', 'post_author', 'comment_status', 'ping_status', '_status', 'post', 'bulk_edit', 'post_view' ), $sendback );
 
 	// Pagenumber
-	$pagenum  = isset( $_REQUEST[ 'paged' ] ) ? absint( $_REQUEST[ 'paged' ] ) : 0;
+	$pagenum  = isset( $_REQUEST['paged'] ) ? absint( wp_unslash( $_REQUEST['paged'] ) ) : 0;
 	$sendback = add_query_arg( 'paged', $pagenum, $sendback );
 
 	// Orderby
-	if ( isset( $_REQUEST[ 'orderby' ] ) ) {
-		$sOrderby = $_REQUEST[ 'orderby' ];
-		$sendback = add_query_arg( 'orderby', $sOrderby, $sendback );
+	if ( isset( $_REQUEST['orderby'] ) ) {
+		$sendback = add_query_arg( 'orderby', sanitize_key( wp_unslash( $_REQUEST['orderby'] ) ), $sendback );
 	}
 
 	// Order
-	if ( isset( $_REQUEST[ 'order' ] ) ) {
-		$sOrder = $_REQUEST[ 'order' ];
-		$sendback = add_query_arg( 'order', $sOrder, $sendback );
+	if ( isset( $_REQUEST['order'] ) ) {
+		$sendback = add_query_arg( 'order', sanitize_key( wp_unslash( $_REQUEST['order'] ) ), $sendback );
 	}
 
 	// Filters
-	if ( isset( $_REQUEST[ 'mode' ] ) ) {
-		$sMode = $_REQUEST[ 'mode' ];
-		$sendback = add_query_arg( 'mode', $sMode, $sendback );
+	if ( isset( $_REQUEST['mode'] ) ) {
+		$sendback = add_query_arg( 'mode', sanitize_key( wp_unslash( $_REQUEST['mode'] ) ), $sendback );
 	}
 
-	if ( isset( $_REQUEST[ 'mode' ] ) ) {
-		$sMode = $_REQUEST[ 'mode' ];
-		$sendback = add_query_arg( 'mode', $sMode, $sendback );
+	if ( isset( $_REQUEST['m'] ) ) {
+		$sendback = add_query_arg( 'm', absint( wp_unslash( $_REQUEST['m'] ) ), $sendback );
 	}
 
-	if ( isset( $_REQUEST[ 'm' ] ) ) {
-		$sM = $_REQUEST[ 'm' ];
-		$sendback = add_query_arg( 'm', $sM, $sendback );
+	if ( isset( $_REQUEST['s'] ) ) {
+		$sendback = add_query_arg( 's', sanitize_text_field( wp_unslash( $_REQUEST['s'] ) ), $sendback );
 	}
 
-	if ( isset( $_REQUEST[ 's' ] ) ) {
-		$sS = $_REQUEST[ 's' ];
-		$sendback = add_query_arg( 's', $sS, $sendback );
+	if ( isset( $_REQUEST['attachment-filter'] ) ) {
+		$sendback = add_query_arg( 'attachment-filter', sanitize_key( wp_unslash( $_REQUEST['attachment-filter'] ) ), $sendback );
 	}
 
-	if ( isset( $_REQUEST[ 'attachment-filter' ] ) ) {
-		$sAttachmentFilter = $_REQUEST[ 'attachment-filter' ];
-		$sendback = add_query_arg( 'attachment-filter', $sAttachmentFilter, $sendback );
-	}
-
-	if ( isset( $_REQUEST[ 'filter_action' ] ) ) {
-		$sFilterAction = $_REQUEST[ 'filter_action' ];
-		$sendback = add_query_arg( 'filter_action', $sFilterAction, $sendback );
+	if ( isset( $_REQUEST['filter_action'] ) ) {
+		$sendback = add_query_arg( 'filter_action', sanitize_text_field( wp_unslash( $_REQUEST['filter_action'] ) ), $sendback );
 	}
 
 	// Get media taxonomy
-	if ( isset( $_REQUEST[ 'media_category' ] ) ) {
-		$sMediaTaxonomy = $_REQUEST[ 'media_category' ];
-		$sendback = add_query_arg( 'media_category', $sMediaTaxonomy, $sendback );
+	if ( isset( $_REQUEST['media_category'] ) ) {
+		$sendback = add_query_arg( 'media_category', sanitize_key( wp_unslash( $_REQUEST['media_category'] ) ), $sendback );
 	}
 
 	return $sendback;
@@ -184,7 +183,8 @@ function wp_media_categories_create_sendback_url() {
 function wp_media_categories_get_terms_values( $keys = 'ids' ) {
 
 	// Get media taxonomy
-	$media_terms = get_terms( 'media_category', array(
+	$media_terms = get_terms( array(
+		'taxonomy'   => 'media_category',
 		'hide_empty' => 0,
 		'fields'     => 'id=>slug',
 	) );
@@ -208,11 +208,11 @@ function wp_media_categories_get_terms_values( $keys = 'ids' ) {
  */
 function wp_media_categories_is_action_bulk_toggle() {
 
-	if ( isset( $_REQUEST[ 'action' ] ) && ( 'bulk_toggle' === $_REQUEST[ 'action' ] ) ) {
+	if ( isset( $_REQUEST['action'] ) && ( 'bulk_toggle' === sanitize_key( wp_unslash( $_REQUEST['action'] ) ) ) ) {
 		return true;
 	}
 
-	if ( isset( $_REQUEST[ 'action2' ] ) && ( 'bulk_toggle' === $_REQUEST[ 'action2' ] ) ) {
+	if ( isset( $_REQUEST['action2'] ) && ( 'bulk_toggle' === sanitize_key( wp_unslash( $_REQUEST['action2'] ) ) ) ) {
 		return true;
 	}
 
@@ -239,49 +239,28 @@ function wp_media_categories_custom_bulk_admin_footer() {
 	if ( in_array( 'attachment', $wp_media_categories_post_type ) ) {
 
 		// Get media taxonomy and corresponding terms
-		$media_terms = get_terms( 'media_category', array(
-			'hide_empty' => '0'
+		$media_terms = get_terms( array(
+			'taxonomy'   => 'media_category',
+			'hide_empty' => false,
 		) );
 
 		// If terms found ok then generate the additional bulk_actions
 		if ( ! empty( $media_terms ) && ! is_wp_error( $media_terms ) ) {
 
-			// Create the box div string.
-			$onChangeTxtTop = "jQuery(\'#bulk_tax_id\').val(jQuery(\'#bulk-action-selector-top option:selected\').attr(\'option_slug\'));";
-			$onChangeTxtBottom = "jQuery(\'#bulk_tax_id\').val(jQuery(\'#bulk-action-selector-bottom option:selected\').attr(\'option_slug\'));";
-
-			// Start the script to add bulk code
-			$wp_media_categories_footer_script = "";
-			$wp_media_categories_footer_script .= " <script type=\"text/javascript\">";
-			$wp_media_categories_footer_script .= "jQuery(document).ready(function(){";
-
-			// Add new hidden field to store the term_slug
-			$wp_media_categories_footer_script .= "jQuery('#posts-filter').prepend('<input type=\"hidden\" id=\"bulk_tax_cat\" name=\"bulk_tax_cat\" value=\"" . 'media_category' . "\" />');";
-			$wp_media_categories_footer_script .= "jQuery('#posts-filter').prepend('<input type=\"hidden\" id=\"bulk_tax_id\" name=\"bulk_tax_id\" value=\"\" />');";
-
-			// Add new action to #bulk-action-selector-top
-			$wp_media_categories_footer_script .= "jQuery('#bulk-action-selector-top')";
-			$wp_media_categories_footer_script .= ".attr('onChange','" . $onChangeTxtTop . "')";
-//				$wp_media_categories_footer_script .=	".attr('onClick','" . $onChangeTxt . "')";
-			$wp_media_categories_footer_script .= ";";
-
-			// Add new action to #bulk-action-selector-bottom
-			$wp_media_categories_footer_script .= "jQuery('#bulk-action-selector-bottom')";
-			$wp_media_categories_footer_script .= ".attr('onChange','" . $onChangeTxtBottom . "')";
-//				$wp_media_categories_footer_script .=	".attr('onClick','" . $onChangeTxt . "')";
-			$wp_media_categories_footer_script .= ";";
-
-			// add bulk_actions for each category term
+			$bulk_actions = array();
 			foreach ( $media_terms as $term ) {
-				$optionTxt = esc_js( __( 'Toggle', 'wp-media-categories' ) . ' ' . $term->name );
-				$wp_media_categories_footer_script .= " jQuery('<option>').val('" . 'bulk_toggle' . "').attr('option_slug','" . $term->term_id . "').text('" . $optionTxt . "').appendTo(\"select[name='action']\");";
-				$wp_media_categories_footer_script .= " jQuery('<option>').val('" . 'bulk_toggle' . "').attr('option_slug','" . $term->term_id . "').text('" . $optionTxt . "').appendTo(\"select[name='action2']\");";
+				$bulk_actions[ (string) absint( $term->term_id ) ] = __( 'Toggle', 'wp-media-categories' ) . ' ' . $term->name;
 			}
 
-			$wp_media_categories_footer_script .= '});';
-			$wp_media_categories_footer_script .= '</script>';
+			$script = '(function($){$(function(){'
+				. "\$('#posts-filter').prepend(\$('<input>',{type:'hidden',id:'bulk_tax_cat',name:'bulk_tax_cat',value:'media_category'}));"
+				. "\$('#posts-filter').prepend(\$('<input>',{type:'hidden',id:'bulk_tax_id',name:'bulk_tax_id',value:''}));"
+				. "\$('#bulk-action-selector-top').on('change',function(){\$('#bulk_tax_id').val(\$(this).find('option:selected').attr('option_slug'));});"
+				. "\$('#bulk-action-selector-bottom').on('change',function(){\$('#bulk_tax_id').val(\$(this).find('option:selected').attr('option_slug'));});"
+				. '$.each(' . wp_json_encode( $bulk_actions ) . ",function(termId,label){\$('<option>',{value:'bulk_toggle',text:label}).attr('option_slug',termId).appendTo(\"select[name='action'],select[name='action2']\");});"
+				. '});})(jQuery);';
 
-			echo $wp_media_categories_footer_script;
+			wp_add_inline_script( 'jquery-core', $script );
 		}
 	}
 }
@@ -315,12 +294,12 @@ function wp_media_categories_custom_bulk_action() {
 
 	// Set some variables
 	$num_bulk_toggled       = 0;
-	$media_taxonomy         = sanitize_key( $_REQUEST[ 'bulk_tax_cat' ] );
-	$bulk_media_category_id = (int) $_REQUEST[ 'bulk_tax_id' ];
+	$media_taxonomy         = sanitize_key( wp_unslash( $_REQUEST['bulk_tax_cat'] ) );
+	$bulk_media_category_id = absint( wp_unslash( $_REQUEST['bulk_tax_id'] ) );
 
 	// Process all media_id s found in the request
-	foreach ( ( array ) $_REQUEST[ 'media' ] as $media_id ) {
-		$media_id = ( int ) $media_id;
+	$media_ids = array_map( 'absint', wp_unslash( (array) $_REQUEST['media'] ) );
+	foreach ( $media_ids as $media_id ) {
 
 		// Check whether this user can edit this post
 		if ( ! current_user_can( 'edit_post', $media_id ) ) {
@@ -348,7 +327,7 @@ function wp_media_categories_custom_bulk_action() {
 	$sendback = wp_media_categories_create_sendback_url();
 	$sendback = add_query_arg( array( 'bulk_toggled' => $num_bulk_toggled ), $sendback );
 
-	wp_redirect( $sendback );
+	wp_safe_redirect( $sendback );
 	exit();
 }
 
@@ -360,9 +339,11 @@ function wp_media_categories_custom_bulk_action() {
 function wp_media_categories_custom_bulk_admin_notices() {
 	global $pagenow;
 
-	if ( ( 'upload.php' === $pagenow ) && ! empty( $_REQUEST[ 'bulk_toggled' ] ) ) {
-		$message = sprintf( _n( 'Media bulk toggled.', '%s media bulk toggled.', $_REQUEST[ 'bulk_toggled' ], 'wp-media-categories' ), number_format_i18n( $_REQUEST[ 'bulk_toggled' ] ) );
-		echo "<div class=\"updated\"><p>{$message}</p></div>";
+	if ( ( 'upload.php' === $pagenow ) && ! empty( $_REQUEST['bulk_toggled'] ) ) {
+		$num_bulk_toggled = absint( wp_unslash( $_REQUEST['bulk_toggled'] ) );
+		/* translators: %s: Number of media attachments updated. */
+		$message = sprintf( _n( '%s media attachment bulk toggled.', '%s media attachments bulk toggled.', $num_bulk_toggled, 'wp-media-categories' ), number_format_i18n( $num_bulk_toggled ) );
+		echo '<div class="updated"><p>' . esc_html( $message ) . '</p></div>';
 	}
 }
 

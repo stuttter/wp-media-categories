@@ -1,6 +1,6 @@
-=== Plugin Name ===
+=== WP Media Categories ===
 Contributors: johnjamesjacoby, stuttter
-Tags: media, library, attachment, category, categories, organizer, management, files
+Tags: media, library, attachments, categories, organization
 Requires PHP: 7.4
 Requires at least: 5.0
 Tested up to: 7.1
@@ -8,6 +8,8 @@ Stable tag: 2.1.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=9Q4F4EL5YJ62J
+
+Organize Media Library attachments with categories and filter them in list and grid views.
 
 == Description ==
 
