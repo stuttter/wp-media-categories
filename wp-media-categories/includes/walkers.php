@@ -55,7 +55,7 @@ class WP_Media_Categories_Media_Grid_Walker extends Walker_CategoryDropdown {
 		$pad      = str_repeat( '&nbsp;', $depth * 3 );
 		$cat_name = apply_filters( 'list_cats', $category->name, $category );
 
-		$term_name = $pad . $cat_name;
+		$term_name = $pad . esc_attr( $cat_name );
 		if ( $args['show_count'] ) {
 			$term_name .= '&nbsp;&nbsp;(' . absint( $category->count ) . ')';
 		}

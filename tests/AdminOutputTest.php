@@ -8,12 +8,6 @@ if ( ! function_exists( 'wp_enqueue_script' ) ) {
 	}
 }
 
-if ( ! function_exists( 'wp_localize_script' ) ) {
-	function wp_localize_script() {
-		return wpmc_test_call( __FUNCTION__, func_get_args() );
-	}
-}
-
 if ( ! function_exists( 'wp_add_inline_script' ) ) {
 	function wp_add_inline_script() {
 		return wpmc_test_call( __FUNCTION__, func_get_args() );
@@ -133,13 +127,10 @@ final class AdminOutputTest extends TestCase {
 			),
 			$GLOBALS['wpmc_test']['calls']['wp_enqueue_script'][0]
 		);
-		$this->assertSame( 'wp-media-categories-bulk-actions', $GLOBALS['wpmc_test']['calls']['wp_localize_script'][0][0] );
-		$this->assertSame( 'wpMediaCategoriesBulkActions', $GLOBALS['wpmc_test']['calls']['wp_localize_script'][0][1] );
-		$this->assertSame( 'media_category', $GLOBALS['wpmc_test']['calls']['wp_localize_script'][0][2]['taxonomy'] );
-		$this->assertSame(
-			array( '7' => 'Toggle </script><script>alert("bad")</script>' ),
-			$GLOBALS['wpmc_test']['calls']['wp_localize_script'][0][2]['actions']
-		);
+		$this->assertSame( 'wp-media-categories-bulk-actions', $GLOBALS['wpmc_test']['calls']['wp_add_inline_script'][0][0] );
+		$this->assertSame( 'before', $GLOBALS['wpmc_test']['calls']['wp_add_inline_script'][0][2] );
+		$this->assertStringContainsString( '\\u003C\\/script\\u003E', $GLOBALS['wpmc_test']['calls']['wp_add_inline_script'][0][1] );
+		$this->assertStringNotContainsString( '</script>', $GLOBALS['wpmc_test']['calls']['wp_add_inline_script'][0][1] );
 	}
 
 	public function test_bulk_actions_are_not_enqueued_outside_the_media_library() {

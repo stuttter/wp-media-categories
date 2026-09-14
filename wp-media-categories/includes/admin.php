@@ -256,13 +256,15 @@ function wp_media_categories_custom_bulk_admin_footer() {
 		true
 	);
 
-	wp_localize_script(
+	$bulk_action_data = array(
+		'taxonomy' => 'media_category',
+		'actions'  => $bulk_actions,
+	);
+
+	wp_add_inline_script(
 		'wp-media-categories-bulk-actions',
-		'wpMediaCategoriesBulkActions',
-		array(
-			'taxonomy' => 'media_category',
-			'actions'  => $bulk_actions,
-		)
+		'var wpMediaCategoriesBulkActions = ' . wp_json_encode( $bulk_action_data, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT ) . ';',
+		'before'
 	);
 }
 

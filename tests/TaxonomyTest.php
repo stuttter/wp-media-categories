@@ -22,6 +22,12 @@ if ( ! function_exists( 'wp_json_encode' ) ) {
 	}
 }
 
+if ( ! function_exists( 'esc_attr' ) ) {
+	function esc_attr( $value ) {
+		return htmlspecialchars( $value, ENT_QUOTES, 'UTF-8' );
+	}
+}
+
 final class TaxonomyTest extends TestCase {
 	private function reset_test_state() {
 		$GLOBALS['wpmc_test'] = array();
@@ -107,7 +113,7 @@ final class TaxonomyTest extends TestCase {
 		$this->assertSame(
 			array(
 				'term_id'   => '7',
-				'term_name' => 'Photos "and" </script>&nbsp;&nbsp;(2)',
+				'term_name' => 'Photos &quot;and&quot; &lt;/script&gt;&nbsp;&nbsp;(2)',
 			),
 			json_decode( ltrim( $output, ',' ), true )
 		);
