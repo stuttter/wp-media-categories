@@ -22,11 +22,18 @@ function add_action() { return wpmc_test_call( __FUNCTION__, func_get_args() ); 
 function add_filter() { return wpmc_test_call( __FUNCTION__, func_get_args() ); }
 function add_shortcode() { return wpmc_test_call( __FUNCTION__, func_get_args() ); }
 function apply_filters( $hook, $value ) { return wpmc_test_call( __FUNCTION__ . ':' . $hook, func_get_args() ) ?: $value; }
+function check_admin_referer() { return wpmc_test_call( __FUNCTION__, func_get_args() ); }
+function current_user_can() { return wpmc_test_call( __FUNCTION__, func_get_args() ); }
 function get_object_taxonomies() { return wpmc_test_call( __FUNCTION__, func_get_args() ); }
 function get_terms() { return wpmc_test_call( __FUNCTION__, func_get_args() ); }
+function has_term() { return wpmc_test_call( __FUNCTION__, func_get_args() ); }
 function is_admin() { return (bool) wpmc_test_call( __FUNCTION__ ); }
 function is_main_query() { return (bool) wpmc_test_call( __FUNCTION__ ); }
+function is_wp_error() { return (bool) wpmc_test_call( __FUNCTION__, func_get_args() ); }
 function register_taxonomy() { return wpmc_test_call( __FUNCTION__, func_get_args() ); }
+function sanitize_key( $key ) { return strtolower( preg_replace( '/[^a-z0-9_\-]/', '', $key ) ); }
+function wp_remove_object_terms() { return wpmc_test_call( __FUNCTION__, func_get_args() ); }
+function wp_set_object_terms() { return wpmc_test_call( __FUNCTION__, func_get_args() ); }
 
 class Walker {}
 class Walker_CategoryDropdown extends Walker {}
