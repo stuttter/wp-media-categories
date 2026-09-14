@@ -46,7 +46,7 @@ final class TaxonomyTest extends TestCase {
 
 		$result = wp_media_categories_no_category_request( array( 'media_category' => 'no_category' ) );
 
-		$this->assertTrue( $result['suppress_filters'] );
+		$this->assertArrayNotHasKey( 'suppress_filters', $result );
 		$this->assertNull( $result['media_category'] );
 		$this->assertSame( 'media_category', $result['tax_query'][0]['taxonomy'] );
 		$this->assertSame( 'NOT EXISTS', $result['tax_query'][0]['operator'] );
@@ -59,5 +59,37 @@ final class TaxonomyTest extends TestCase {
 		$query = array( 'media_category' => 'no_category' );
 
 		$this->assertSame( $query, wp_media_categories_no_category_request( $query ) );
+	}
+
+	public function test_sanitizes_the_no_category_taxonomy_request() {
+		$this->reset_test_state();
+		$_REQUEST = array(
+			'filter_action'  => " Filter\\' ",
+			'bulk_tax_cat'   => 'media\\_category',
+			'media_category' => 'no\\_category',
+		);
+
+		$this->assertSame( 'media_category', wp_media_categories_get_no_category_search() );
+	}
+
+	public function test_media_grid_walker_json_encodes_term_data() {
+		$walker   = new WP_Media_Categories_Media_Grid_Walker();
+		$output   = '';
+		$category = (object) array(
+			'term_id' => 7,
+			'name'    => 'Photos "and" </script>',
+			'count'   => 2,
+		);
+
+		$walker->start_el( $output, $category, 0, array( 'show_count' => true ) );
+
+		$this->assertStringNotContainsString( '</script>', $output );
+		$this->assertSame(
+			array(
+				'term_id'   => '7',
+				'term_name' => 'Photos &quot;and&quot; &lt;/script&gt;&nbsp;&nbsp;(2)',
+			),
+			json_decode( ltrim( $output, ',' ), true )
+		);
 	}
 }

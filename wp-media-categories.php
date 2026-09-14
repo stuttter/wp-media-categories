@@ -8,7 +8,6 @@
  * License:     GPL v2 or later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain: wp-media-categories
- * Domain Path: /wp-media-categories/lang
  * Description: Categories for media & attachments
  * Requires at least: 5.0
  * Requires PHP: 7.4

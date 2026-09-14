@@ -36,10 +36,12 @@ class WP_Media_Categories extends WP_Widget {
 		$h = ! empty( $instance['hierarchical'] ) ? '1' : '0';
 		$d = ! empty( $instance['dropdown'] )     ? '1' : '0';
 
-		echo $args['before_widget'];
+		echo $args['before_widget']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Theme-provided widget wrapper HTML must remain intact.
 
 		if ( ! empty( $title ) ) {
-			echo $args['before_title'] . $title . $args['after_title'];
+			echo $args['before_title']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Theme-provided title wrapper HTML must remain intact.
+			echo wp_kses_post( $title );
+			echo $args['after_title']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Theme-provided title wrapper HTML must remain intact.
 		}
 
 		$media_cat_args = wp_media_categories_get_media_category_options();
@@ -61,7 +63,7 @@ class WP_Media_Categories extends WP_Widget {
 
 			$first_dropdown = false;
 
-			echo '<label class="screen-reader-text" for="' . esc_attr( $dropdown_id ) . '">' . $title . '</label>';
+			echo '<label class="screen-reader-text" for="' . esc_attr( $dropdown_id ) . '">' . esc_html( $title ) . '</label>';
 
 			$media_cat_args['show_option_none'] = __( 'Select Category', 'wp-media-categories' );
 			$media_cat_args['id']               = $dropdown_id;
@@ -69,6 +71,7 @@ class WP_Media_Categories extends WP_Widget {
 
 			// Get the taxonomy slug
 			$slug = get_taxonomy( $media_cat_args['taxonomy'] )->rewrite['slug'];
+			$url  = home_url( $slug ) . '/';
 
 			/**
 			 * Filter the arguments for the Categories widget drop-down.
@@ -87,7 +90,7 @@ class WP_Media_Categories extends WP_Widget {
 				var dropdown = document.getElementById( "<?php echo esc_js( $dropdown_id ); ?>" );
 				function onMediaCatChange() {
 					if ( dropdown.options[ dropdown.selectedIndex ].value !== -1 ) {
-						location.href = "<?php echo home_url( $slug ); ?>/" + dropdown.options[ dropdown.selectedIndex ].value;
+						location.href = <?php echo wp_json_encode( $url, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT ); ?> + dropdown.options[ dropdown.selectedIndex ].value;
 					}
 				}
 				dropdown.onchange = onMediaCatChange;
@@ -118,12 +121,12 @@ class WP_Media_Categories extends WP_Widget {
 
 		endif;
 
-		echo $args['after_widget'];
+		echo $args['after_widget']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Theme-provided widget wrapper HTML must remain intact.
 	}
 
 	public function update( $new_instance, $old_instance ) {
 		$instance                 = $old_instance;
-		$instance['title']        = strip_tags($new_instance['title']);
+		$instance['title']        = wp_strip_all_tags( $new_instance['title'] );
 		$instance['count']        = !empty($new_instance['count'])        ? 1 : 0;
 		$instance['hierarchical'] = !empty($new_instance['hierarchical']) ? 1 : 0;
 		$instance['dropdown']     = !empty($new_instance['dropdown'])     ? 1 : 0;
@@ -133,27 +136,27 @@ class WP_Media_Categories extends WP_Widget {
 
 	public function form( $instance ) {
 		$instance     = wp_parse_args( (array) $instance, array( 'title' => '' ) );
-		$title        = esc_attr( $instance['title'] );
+		$title        = $instance['title'];
 		$count        = isset($instance['count'])          ? (bool) $instance['count']        : false;
 		$hierarchical = isset( $instance['hierarchical'] ) ? (bool) $instance['hierarchical'] : false;
 		$dropdown     = isset( $instance['dropdown'] )     ? (bool) $instance['dropdown']     : false; ?>
 
 		<p>
-			<label for="<?php echo $this->get_field_id('title'); ?>"><?php _e( 'Title:', 'wp-media-categories' ); ?></label>
-			<input class="widefat" id="<?php echo $this->get_field_id('title'); ?>" name="<?php echo $this->get_field_name('title'); ?>" type="text" value="<?php echo $title; ?>" />
+			<label for="<?php echo esc_attr( $this->get_field_id( 'title' ) ); ?>"><?php esc_html_e( 'Title:', 'wp-media-categories' ); ?></label>
+			<input class="widefat" id="<?php echo esc_attr( $this->get_field_id( 'title' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'title' ) ); ?>" type="text" value="<?php echo esc_attr( $title ); ?>" />
 		</p>
 
 		<p>
-			<input type="checkbox" class="checkbox" id="<?php echo $this->get_field_id('dropdown'); ?>" name="<?php echo $this->get_field_name('dropdown'); ?>"<?php checked( $dropdown ); ?> />
-			<label for="<?php echo $this->get_field_id('dropdown'); ?>"><?php _e( 'Display as dropdown', 'wp-media-categories' ); ?></label>
+			<input type="checkbox" class="checkbox" id="<?php echo esc_attr( $this->get_field_id( 'dropdown' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'dropdown' ) ); ?>"<?php checked( $dropdown ); ?> />
+			<label for="<?php echo esc_attr( $this->get_field_id( 'dropdown' ) ); ?>"><?php esc_html_e( 'Display as dropdown', 'wp-media-categories' ); ?></label>
 			<br />
 
-			<input type="checkbox" class="checkbox" id="<?php echo $this->get_field_id('count'); ?>" name="<?php echo $this->get_field_name('count'); ?>"<?php checked( $count ); ?> />
-			<label for="<?php echo $this->get_field_id('count'); ?>"><?php _e( 'Show post counts', 'wp-media-categories' ); ?></label>
+			<input type="checkbox" class="checkbox" id="<?php echo esc_attr( $this->get_field_id( 'count' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'count' ) ); ?>"<?php checked( $count ); ?> />
+			<label for="<?php echo esc_attr( $this->get_field_id( 'count' ) ); ?>"><?php esc_html_e( 'Show post counts', 'wp-media-categories' ); ?></label>
 			<br />
 
-			<input type="checkbox" class="checkbox" id="<?php echo $this->get_field_id('hierarchical'); ?>" name="<?php echo $this->get_field_name('hierarchical'); ?>"<?php checked( $hierarchical ); ?> />
-			<label for="<?php echo $this->get_field_id('hierarchical'); ?>"><?php _e( 'Show hierarchy', 'wp-media-categories' ); ?></label>
+			<input type="checkbox" class="checkbox" id="<?php echo esc_attr( $this->get_field_id( 'hierarchical' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'hierarchical' ) ); ?>"<?php checked( $hierarchical ); ?> />
+			<label for="<?php echo esc_attr( $this->get_field_id( 'hierarchical' ) ); ?>"><?php esc_html_e( 'Show hierarchy', 'wp-media-categories' ); ?></label>
 		</p>
 
 	<?php

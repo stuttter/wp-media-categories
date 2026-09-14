@@ -55,14 +55,18 @@ class WP_Media_Categories_Media_Grid_Walker extends Walker_CategoryDropdown {
 		$pad      = str_repeat( '&nbsp;', $depth * 3 );
 		$cat_name = apply_filters( 'list_cats', $category->name, $category );
 
-		$output .= ',{"term_id":"' . $category->term_id . '",';
-
-		$output .= '"term_name":"' . $pad . esc_attr( $cat_name );
+		$term_name = $pad . esc_attr( $cat_name );
 		if ( $args['show_count'] ) {
-			$output .= '&nbsp;&nbsp;('. $category->count .')';
+			$term_name .= '&nbsp;&nbsp;(' . absint( $category->count ) . ')';
 		}
 
-		$output .= '"}';
+		$output .= ',' . wp_json_encode(
+			array(
+				'term_id'   => (string) absint( $category->term_id ),
+				'term_name' => $term_name,
+			),
+			JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT
+		);
 	}
 }
 

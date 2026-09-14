@@ -15,7 +15,7 @@ add_action( 'init', 'wp_media_categories_register_widgets'        );
 
 // Admin
 add_action( 'admin_enqueue_scripts',	'wp_media_categories_enqueue_admin_scripts' );
-add_action( 'admin_footer-upload.php',	'wp_media_categories_custom_bulk_admin_footer' );
+add_action( 'admin_enqueue_scripts',	'wp_media_categories_custom_bulk_admin_footer', 20 );
 add_action( 'admin_notices',			'wp_media_categories_custom_bulk_admin_notices' );
 add_action( 'load-upload.php',			'wp_media_categories_custom_bulk_action' );
 

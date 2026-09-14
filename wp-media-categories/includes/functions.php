@@ -23,13 +23,15 @@ function wp_media_categories_update_count_callback( $terms = array(), $media_tax
 
 	// Get taxonomy name - handle both object and string for backward compatibility
 	if ( is_object( $media_taxonomy ) ) {
-		$taxonomy_name = $media_taxonomy->name;
+		$taxonomy_name = sanitize_key( $media_taxonomy->name );
 	} else {
-		$taxonomy_name = $media_taxonomy ?: 'media_category';
+		$taxonomy_name = sanitize_key( $media_taxonomy ?: 'media_category' );
 	}
 
 	// select id & count from taxonomy
-	$sql = "SELECT term_taxonomy_id, MAX(total) AS total FROM ((
+	$count = $wpdb->get_results( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- This taxonomy count callback must read current relationship counts before updating them.
+		$wpdb->prepare(
+			"SELECT term_taxonomy_id, MAX(total) AS total FROM ((
 				SELECT tt.term_taxonomy_id, COUNT(*) AS total
 					FROM {$wpdb->term_relationships} tr, {$wpdb->term_taxonomy} tt
 					WHERE tr.term_taxonomy_id = tt.term_taxonomy_id
@@ -39,14 +41,15 @@ function wp_media_categories_update_count_callback( $terms = array(), $media_tax
 					SELECT term_taxonomy_id, 0 AS total
 						FROM {$wpdb->term_taxonomy}
 						WHERE taxonomy = %s
-				)) AS unioncount GROUP BY term_taxonomy_id";
-
-	$prepared = $wpdb->prepare( $sql, $taxonomy_name, $taxonomy_name );
-	$count    = $wpdb->get_results( $prepared );
+				)) AS unioncount GROUP BY term_taxonomy_id",
+			$taxonomy_name,
+			$taxonomy_name
+		)
+	);
 
 	// update all count values from taxonomy
 	foreach ( $count as $row_count ) {
-		$wpdb->update(
+		$wpdb->update( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Counts are the cache data maintained by this taxonomy callback.
 			$wpdb->term_taxonomy,
 			array( 'count'            => $row_count->total            ),
 			array( 'term_taxonomy_id' => $row_count->term_taxonomy_id )
@@ -97,10 +100,6 @@ function wp_media_categories_no_category_request( $query_args = array() ) {
 		// No categories, so do a "NOT EXISTS" taxonomy query
 		if ( 'no_category' === $query_args[ $media_category ] ) {
 
-			// This is necessary to prevent the JOIN clause from being stomped
-			// and replaced for postmeta
-			$query_args['suppress_filters'] = true;
-
 			// This adds a taxonomy query, looking for no terms
 			$query_args['tax_query'] = array(
 				array(
@@ -129,17 +128,21 @@ function wp_media_categories_get_no_category_search() {
 	$search = '';
 
 	// Check for correct Filter situation
-	if ( empty( $_REQUEST['filter_action'] ) ) {
+	$filter_action = isset( $_REQUEST['filter_action'] )
+		? sanitize_text_field( wp_unslash( $_REQUEST['filter_action'] ) )
+		: '';
+
+	if ( empty( $filter_action ) ) {
 		return $search;
 	}
 
 	// Check parameters to use for new request
 	if ( ! empty( $_REQUEST['bulk_tax_cat'] ) ) {
-		$search = $_REQUEST['bulk_tax_cat'];
+		$search = sanitize_key( wp_unslash( $_REQUEST['bulk_tax_cat'] ) );
 
 		// Get the request value
 		$request = isset( $_REQUEST[ $search ] )
-			? $_REQUEST[ $search ]
+			? sanitize_key( wp_unslash( $_REQUEST[ $search ] ) )
 			: '';
 
 		// Filter request on specific category so don't mess with it
@@ -251,10 +254,13 @@ function wp_media_attachment_fields( $fields = array(), $post = false ) {
 		// Get the output buffer contents
 		$contents = ob_get_clean();
 
+		/* translators: %s: Media taxonomy label. */
+		$empty_message = sprintf( esc_html__( 'No %s', 'wp-media-categories' ), esc_html( $t[ 'label' ] ) );
+
 		// Decide what the HTML will be
 		$html = ( false !== $contents )
 			? '<ul class="term-list">' . $contents . '</ul>'
-			: '<ul class="term-list"><li>' . sprintf( esc_html__( 'No %s', 'wp-media-categories' ), $t[ 'label' ] ) . '</li></ul>';
+			: '<ul class="term-list"><li>' . $empty_message . '</li></ul>';
 
 		// Setup the new fields
 		$t[ 'input' ] = 'html';
@@ -312,6 +318,7 @@ function wp_media_categories_register_gallery_shortcode( $args = array() ) {
 	// Query for the posts
 	$the_query = new WP_Query( $query );
 	$posts     = $the_query->get_posts();
+	$ids       = array();
 
 	// Get the IDs
 	if ( ! empty( $posts ) ) {
