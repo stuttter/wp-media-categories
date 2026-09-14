@@ -32,13 +32,29 @@ function is_main_query() { return (bool) wpmc_test_call( __FUNCTION__ ); }
 function is_wp_error() { return (bool) wpmc_test_call( __FUNCTION__, func_get_args() ); }
 function register_taxonomy() { return wpmc_test_call( __FUNCTION__, func_get_args() ); }
 function sanitize_key( $key ) { return strtolower( preg_replace( '/[^a-z0-9_\-]/', '', $key ) ); }
+function sanitize_text_field( $value ) { return trim( strip_tags( $value ) ); }
+function wp_unslash( $value ) {
+	return is_array( $value )
+		? array_map( 'wp_unslash', $value )
+		: stripslashes( $value );
+}
+function wp_json_encode( $value, $options = 0 ) { return json_encode( $value, $options ); }
+function esc_attr( $value ) { return htmlspecialchars( $value, ENT_QUOTES, 'UTF-8' ); }
 function wp_remove_object_terms() { return wpmc_test_call( __FUNCTION__, func_get_args() ); }
 function wp_set_object_terms() { return wpmc_test_call( __FUNCTION__, func_get_args() ); }
 
 class Walker {}
 class Walker_CategoryDropdown extends Walker {}
 class WP_Query {}
-class WP_Widget {}
+class WP_Widget {
+	public $id_base;
+	public $number;
+
+	public function __construct( $id_base = '' ) {
+		$this->id_base = $id_base;
+		$this->number  = 1;
+	}
+}
 
 require_once dirname( __DIR__ ) . '/wp-media-categories/includes/walkers.php';
 require_once dirname( __DIR__ ) . '/wp-media-categories/includes/admin.php';

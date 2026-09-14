@@ -71,6 +71,7 @@ class WP_Media_Categories extends WP_Widget {
 
 			// Get the taxonomy slug
 			$slug = get_taxonomy( $media_cat_args['taxonomy'] )->rewrite['slug'];
+			$url  = home_url( $slug ) . '/';
 
 			/**
 			 * Filter the arguments for the Categories widget drop-down.
@@ -89,7 +90,7 @@ class WP_Media_Categories extends WP_Widget {
 				var dropdown = document.getElementById( "<?php echo esc_js( $dropdown_id ); ?>" );
 				function onMediaCatChange() {
 					if ( dropdown.options[ dropdown.selectedIndex ].value !== -1 ) {
-						location.href = "<?php echo esc_url( home_url( $slug ) ); ?>/" + dropdown.options[ dropdown.selectedIndex ].value;
+						location.href = <?php echo wp_json_encode( $url, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT ); ?> + dropdown.options[ dropdown.selectedIndex ].value;
 					}
 				}
 				dropdown.onchange = onMediaCatChange;

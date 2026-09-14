@@ -2,32 +2,6 @@
 
 use PHPUnit\Framework\TestCase;
 
-if ( ! function_exists( 'sanitize_text_field' ) ) {
-	function sanitize_text_field( $value ) {
-		return trim( strip_tags( $value ) );
-	}
-}
-
-if ( ! function_exists( 'wp_unslash' ) ) {
-	function wp_unslash( $value ) {
-		return is_array( $value )
-			? array_map( 'wp_unslash', $value )
-			: stripslashes( $value );
-	}
-}
-
-if ( ! function_exists( 'wp_json_encode' ) ) {
-	function wp_json_encode( $value, $options = 0 ) {
-		return json_encode( $value, $options );
-	}
-}
-
-if ( ! function_exists( 'esc_attr' ) ) {
-	function esc_attr( $value ) {
-		return htmlspecialchars( $value, ENT_QUOTES, 'UTF-8' );
-	}
-}
-
 final class TaxonomyTest extends TestCase {
 	private function reset_test_state() {
 		$GLOBALS['wpmc_test'] = array();

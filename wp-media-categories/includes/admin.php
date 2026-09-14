@@ -208,11 +208,11 @@ function wp_media_categories_get_terms_values( $keys = 'ids' ) {
  */
 function wp_media_categories_is_action_bulk_toggle() {
 
-	if ( isset( $_REQUEST['action'] ) && ( 'bulk_toggle' === sanitize_key( wp_unslash( $_REQUEST['action'] ) ) ) ) {
+	if ( isset( $_REQUEST['action'] ) && is_string( $_REQUEST['action'] ) && ( 'bulk_toggle' === sanitize_key( wp_unslash( $_REQUEST['action'] ) ) ) ) {
 		return true;
 	}
 
-	if ( isset( $_REQUEST['action2'] ) && ( 'bulk_toggle' === sanitize_key( wp_unslash( $_REQUEST['action2'] ) ) ) ) {
+	if ( isset( $_REQUEST['action2'] ) && is_string( $_REQUEST['action2'] ) && ( 'bulk_toggle' === sanitize_key( wp_unslash( $_REQUEST['action2'] ) ) ) ) {
 		return true;
 	}
 

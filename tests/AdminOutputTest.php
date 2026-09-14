@@ -144,6 +144,19 @@ final class AdminOutputTest extends TestCase {
 		$this->assertArrayNotHasKey( 'wp_enqueue_script', $calls );
 	}
 
+	public function test_bulk_action_detection_rejects_non_scalar_request_values() {
+		$_REQUEST['action']  = array( 'bulk_toggle' );
+		$_REQUEST['action2'] = array( 'bulk_toggle' );
+
+		$this->assertFalse( wp_media_categories_is_action_bulk_toggle() );
+	}
+
+	public function test_bulk_action_detection_accepts_the_core_string_value() {
+		$_REQUEST['action'] = 'bulk_toggle';
+
+		$this->assertTrue( wp_media_categories_is_action_bulk_toggle() );
+	}
+
 	public function test_media_grid_data_handles_dropdown_whitespace_and_hex_encodes_inline_json() {
 		$GLOBALS['wpmc_test']['returns']['wp_script_is'] = true;
 		$GLOBALS['wpmc_test']['returns']['wp_dropdown_categories'] = "<select>\n,{\"term_id\":\"7\",\"term_name\":\"Photos \\u003C\\/script\\u003E\"}\n</select>";
