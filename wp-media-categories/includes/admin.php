@@ -220,49 +220,50 @@ function wp_media_categories_is_action_bulk_toggle() {
 }
 
 /**
- * For Media Category Management, the actual category should be used
+ * Enqueue Media Library bulk category actions.
  *
  * @since 0.1.0
  */
 function wp_media_categories_custom_bulk_admin_footer() {
-	global $post_type;
+	global $pagenow;
 
-	// Make an array of post_type
-	if ( is_array( $post_type ) ) {
-		$wp_media_categories_post_type = $post_type;
-	} else {
-		$wp_media_categories_post_type   = array();
-		$wp_media_categories_post_type[] = $post_type;
+	// Bulk category actions belong only to the Media Library list table.
+	if ( 'upload.php' !== $pagenow ) {
+		return;
 	}
 
-	// Check whether the post_type array contains attachment
-	if ( in_array( 'attachment', $wp_media_categories_post_type ) ) {
+	// Get media taxonomy and corresponding terms.
+	$media_terms = get_terms( array(
+		'taxonomy'   => 'media_category',
+		'hide_empty' => false,
+	) );
 
-		// Get media taxonomy and corresponding terms
-		$media_terms = get_terms( array(
-			'taxonomy'   => 'media_category',
-			'hide_empty' => false,
-		) );
-
-		// If terms found ok then generate the additional bulk_actions
-		if ( ! empty( $media_terms ) && ! is_wp_error( $media_terms ) ) {
-
-			$bulk_actions = array();
-			foreach ( $media_terms as $term ) {
-				$bulk_actions[ (string) absint( $term->term_id ) ] = __( 'Toggle', 'wp-media-categories' ) . ' ' . $term->name;
-			}
-
-			$script = '(function($){$(function(){'
-				. "\$('#posts-filter').prepend(\$('<input>',{type:'hidden',id:'bulk_tax_cat',name:'bulk_tax_cat',value:'media_category'}));"
-				. "\$('#posts-filter').prepend(\$('<input>',{type:'hidden',id:'bulk_tax_id',name:'bulk_tax_id',value:''}));"
-				. "\$('#bulk-action-selector-top').on('change',function(){\$('#bulk_tax_id').val(\$(this).find('option:selected').attr('option_slug'));});"
-				. "\$('#bulk-action-selector-bottom').on('change',function(){\$('#bulk_tax_id').val(\$(this).find('option:selected').attr('option_slug'));});"
-				. '$.each(' . wp_json_encode( $bulk_actions ) . ",function(termId,label){\$('<option>',{value:'bulk_toggle',text:label}).attr('option_slug',termId).appendTo(\"select[name='action'],select[name='action2']\");});"
-				. '});})(jQuery);';
-
-			wp_add_inline_script( 'jquery-core', $script );
-		}
+	// Bail if no terms were found.
+	if ( empty( $media_terms ) || is_wp_error( $media_terms ) ) {
+		return;
 	}
+
+	$bulk_actions = array();
+	foreach ( $media_terms as $term ) {
+		$bulk_actions[ (string) absint( $term->term_id ) ] = __( 'Toggle', 'wp-media-categories' ) . ' ' . $term->name;
+	}
+
+	wp_enqueue_script(
+		'wp-media-categories-bulk-actions',
+		wp_media_categories_get_plugin_url() . 'assets/js/bulk-actions.js',
+		array( 'jquery' ),
+		wp_media_categories_get_asset_version(),
+		true
+	);
+
+	wp_localize_script(
+		'wp-media-categories-bulk-actions',
+		'wpMediaCategoriesBulkActions',
+		array(
+			'taxonomy' => 'media_category',
+			'actions'  => $bulk_actions,
+		)
+	);
 }
 
 /**

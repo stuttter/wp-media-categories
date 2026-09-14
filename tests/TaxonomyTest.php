@@ -16,6 +16,12 @@ if ( ! function_exists( 'wp_unslash' ) ) {
 	}
 }
 
+if ( ! function_exists( 'wp_json_encode' ) ) {
+	function wp_json_encode( $value ) {
+		return json_encode( $value, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT );
+	}
+}
+
 final class TaxonomyTest extends TestCase {
 	private function reset_test_state() {
 		$GLOBALS['wpmc_test'] = array();
