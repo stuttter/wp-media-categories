@@ -46,11 +46,11 @@ function wp_media_categories_enqueue_admin_scripts() {
 		}
 
 		array_unshift(
-			$attachment_terms,
-			array(
-				'term_id'   => 'no_category',
-				'term_name' => __( 'No categories', 'wp-media-categories' ),
-			)
+		$attachment_terms,
+		array(
+			'term_id'   => 'no_category',
+			'term_name' => esc_attr( __( 'No categories', 'wp-media-categories' ) ),
+		)
 		);
 
 		$taxonomy_data = array(

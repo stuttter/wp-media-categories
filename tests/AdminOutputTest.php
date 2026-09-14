@@ -160,13 +160,17 @@ final class AdminOutputTest extends TestCase {
 	public function test_media_grid_data_handles_dropdown_whitespace_and_hex_encodes_inline_json() {
 		$GLOBALS['wpmc_test']['returns']['wp_script_is'] = true;
 		$GLOBALS['wpmc_test']['returns']['wp_dropdown_categories'] = "<select>\n,{\"term_id\":\"7\",\"term_name\":\"Photos \\u003C\\/script\\u003E\"}\n</select>";
+		$GLOBALS['wpmc_test']['returns']['__'] = '<em>No categories</em>';
 
 		wp_media_categories_enqueue_admin_scripts();
 
 		$inline_script = $GLOBALS['wpmc_test']['calls']['wp_add_inline_script'][0][1];
+		$taxonomy_data = json_decode( substr( $inline_script, strpos( $inline_script, '= ' ) + 2, -1 ), true );
+
 		$this->assertStringContainsString( '"term_id":"7"', $inline_script );
 		$this->assertStringContainsString( '\\u003C\\/script\\u003E', $inline_script );
 		$this->assertStringNotContainsString( '</script>', $inline_script );
+		$this->assertSame( '&lt;em&gt;No categories&lt;/em&gt;', $taxonomy_data['media_category']['term_list'][0]['term_name'] );
 	}
 
 	public function test_preserves_percent_encoded_term_slugs_in_filters_and_sendback_urls() {

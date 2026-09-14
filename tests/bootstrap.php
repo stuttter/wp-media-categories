@@ -16,7 +16,7 @@ function wpmc_test_call( $name, $arguments = array() ) {
 		: null;
 }
 
-function __( $text ) { return $text; }
+function __( $text ) { return wpmc_test_call( __FUNCTION__, func_get_args() ) ?: $text; }
 function absint( $value ) { return abs( (int) $value ); }
 function add_action() { return wpmc_test_call( __FUNCTION__, func_get_args() ); }
 function add_filter() { return wpmc_test_call( __FUNCTION__, func_get_args() ); }
