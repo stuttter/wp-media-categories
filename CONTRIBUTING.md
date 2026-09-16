@@ -27,6 +27,19 @@ for understanding and validating the result.
 The shipped plugin and its Composer development toolchain require PHP 7.4 or
 newer. Production Composer installs should omit development dependencies.
 
+Install the locked development tools and run the local checks with:
+
+```sh
+composer install
+composer test
+composer phpcs
+composer phpstan
+```
+
+PHPCS compares the current code with a committed legacy baseline, while PHPStan
+starts with no ignored findings. Existing PHPCS findings may be removed as code
+improves, but new findings and increased allowances fail CI.
+
 ## Real WordPress smoke test
 
 The planned shared portfolio workflow will load `tests/integration/smoke.php`
