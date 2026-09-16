@@ -2,7 +2,7 @@
 Contributors: johnjamesjacoby, stuttter
 Tags: media, library, attachments, categories, organization
 Requires PHP: 7.4
-Requires at least: 5.0
+Requires at least: 6.4
 Tested up to: 7.1
 Stable tag: 2.2.0
 License: GPLv2 or later
