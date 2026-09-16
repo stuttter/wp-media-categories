@@ -1,0 +1,14 @@
+includes:
+    - phpstan-baseline.neon
+
+parameters:
+    level: 5
+    phpVersion: 70400
+    paths:
+        - wp-media-categories.php
+        - wp-media-categories
+    scanFiles:
+        - vendor/php-stubs/wordpress-stubs/wordpress-stubs.php
+    tmpDir: build/phpstan
+    parallel:
+        maximumNumberOfProcesses: 1
