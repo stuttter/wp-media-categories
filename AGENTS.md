@@ -2,7 +2,7 @@
 
 ## Compatibility
 
-- Preserve PHP 7.0 and WordPress 5.0 compatibility unless a dedicated pull
+- Preserve PHP 7.4 and WordPress 6.4 compatibility unless a dedicated pull
   request explicitly changes the published minimums.
 - Treat attachment taxonomy relationships, bulk actions, AJAX requests, custom
   count queries, and media-library integration as elevated-risk code.

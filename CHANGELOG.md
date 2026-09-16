@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Require WordPress 6.4 or newer
+
 ## 2.2.0 (2026-09-14)
 
 - Require the Media Library bulk-action nonce before changing attachment categories (CVE-2025-60134)

@@ -5,7 +5,7 @@ Describe the observable change and why it belongs in WP Media Categories.
 ## Risk and compatibility
 
 - [ ] Public functions, hooks, filters, taxonomy names, and rewrite behavior remain compatible.
-- [ ] PHP 7.4 and WordPress 5.0 compatibility are preserved.
+- [ ] PHP 7.4 and WordPress 6.4 compatibility are preserved.
 - [ ] Media list, media grid, attachment editing, widget, and shortcode impact is described where applicable.
 - [ ] Capability, nonce, taxonomy relationship, database, automation, and release implications are identified.
 
