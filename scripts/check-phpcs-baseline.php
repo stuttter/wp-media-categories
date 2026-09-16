@@ -36,9 +36,9 @@ exec( implode( ' ', $escaped ), $process_output, $status );
 $report = json_decode( (string) file_get_contents( $report_path ), true );
 unlink( $report_path );
 
-// PHPCS uses statuses 1 and 2 for reported violations, depending on whether
-// any are auto-fixable. Higher statuses represent an execution failure.
-if ( $status > 2 ) {
+// PHPCS uses bit flags 1 and 2 for reported and fixable violations, so status
+// 3 is also a valid findings report. Higher statuses represent tool failures.
+if ( $status > 3 ) {
 	fwrite( STDERR, "PHPCS failed with exit status {$status}.\n" );
 	exit( 2 );
 }
