@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 2.2.1 (2026-09-16)
+
 - Require WordPress 6.4 or newer
 
 ## 2.2.0 (2026-09-14)
