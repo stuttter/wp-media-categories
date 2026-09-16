@@ -51,6 +51,7 @@ if ( ! is_array( $report ) || ! isset( $report['files'] ) ) {
 $counts = array();
 foreach ( $report['files'] as $file_path => $file ) {
 	$relative_path = str_replace( $root . DIRECTORY_SEPARATOR, '', $file_path );
+	$relative_path = str_replace( DIRECTORY_SEPARATOR, '/', $relative_path );
 
 	foreach ( $file['messages'] as $message ) {
 		$key            = $relative_path . '|' . $message['source'];
