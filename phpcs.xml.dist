@@ -3,6 +3,7 @@
     <description>WordPress Coding Standards for WP Media Categories.</description>
 
     <file>wp-media-categories.php</file>
+    <file>wp-media-categories</file>
     <file>scripts</file>
     <file>tests</file>
 

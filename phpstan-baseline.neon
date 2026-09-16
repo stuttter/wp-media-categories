@@ -1,0 +1,49 @@
+parameters:
+	ignoreErrors:
+		-
+			message: '#^Parameter \#4 \$ver of function wp_enqueue_script expects bool\|string\|null, int given\.$#'
+			identifier: argument.type
+			count: 2
+			path: wp-media-categories/includes/admin.php
+
+		-
+			message: '#^Parameter \#4 \$ver of function wp_enqueue_style expects bool\|string\|null, int given\.$#'
+			identifier: argument.type
+			count: 1
+			path: wp-media-categories/includes/admin.php
+
+		-
+			message: '#^Constant ARRAY_A not found\.$#'
+			identifier: constant.notFound
+			count: 1
+			path: wp-media-categories/includes/ajax.php
+
+		-
+			message: '#^Parameter \#1 \$array \(array\<array\{alt\: string, author\: string, authorName\: string, caption\: string, compat\: array, context\: string, date\: int, dateFormatted\: string, \.\.\.\}\|void\>\) to function array_filter does not contain falsy values, the array will always stay the same\.$#'
+			identifier: arrayFilter.same
+			count: 1
+			path: wp-media-categories/includes/ajax.php
+
+		-
+			message: '#^Default value of the parameter \#2 \$post \(false\) of function wp_media_attachment_fields\(\) is incompatible with type object\.$#'
+			identifier: parameter.defaultValue
+			count: 1
+			path: wp-media-categories/includes/functions.php
+
+		-
+			message: '#^Offset ''value'' on array\{show_option_all\?\: string, show_option_none\?\: string, option_none_value\?\: string, orderby\?\: string, pad_counts\?\: bool, show_count\?\: bool\|int, echo\?\: bool\|int, hierarchical\?\: bool\|int, \.\.\.\} in isset\(\) does not exist\.$#'
+			identifier: isset.offset
+			count: 1
+			path: wp-media-categories/includes/walkers.php
+
+		-
+			message: '#^Strict comparison using \=\=\= between ''slug'' and ''slug'' will always evaluate to true\.$#'
+			identifier: identical.alwaysTrue
+			count: 1
+			path: wp-media-categories/includes/walkers.php
+
+		-
+			message: '#^Method WP_Media_Categories\:\:form\(\) should return string but return statement is missing\.$#'
+			identifier: return.missing
+			count: 1
+			path: wp-media-categories/includes/widgets.php

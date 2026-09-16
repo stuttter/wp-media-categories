@@ -36,9 +36,9 @@ composer phpcs
 composer phpstan
 ```
 
-PHPCS compares the current code with a committed legacy baseline, while PHPStan
-starts with no ignored findings. Existing PHPCS findings may be removed as code
-improves, but new findings and increased allowances fail CI.
+PHPCS and PHPStan compare the current code with committed legacy baselines.
+Existing findings may be removed as code improves, but new findings and
+increased allowances fail CI.
 
 ## Real WordPress smoke test
 
