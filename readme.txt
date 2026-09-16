@@ -4,7 +4,7 @@ Tags: media, library, attachments, categories, organization
 Requires PHP: 7.4
 Requires at least: 6.4
 Tested up to: 7.1
-Stable tag: 2.2.0
+Stable tag: 2.2.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=9Q4F4EL5YJ62J
@@ -58,6 +58,9 @@ The WordPress support forums: https://wordpress.org/support/plugin/wp-media-cate
 http://github.com/stuttter/wp-media-categories/
 
 == Changelog ==
+
+= [2.2.1] - 2026-09-16 =
+* Require WordPress 6.4 or newer
 
 = [2.2.0] - 2026-09-14 =
 * Require the Media Library bulk-action nonce before changing attachment categories (CVE-2025-60134)
