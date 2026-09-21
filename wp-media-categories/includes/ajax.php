@@ -13,6 +13,7 @@ defined( 'ABSPATH' ) || exit;
  * Changing categories in the grid view
  *
  * @since 0.1.0
+ * @return void
  */
 function wp_media_categories_ajax_query_attachments() {
 
@@ -76,7 +77,7 @@ function wp_media_categories_ajax_query_attachments() {
 	$query = new WP_Query( $query );
 
 	$posts = array_map( 'wp_prepare_attachment_for_js', $query->posts );
-	$posts = array_filter( $posts );
+	$posts = array_filter( $posts, 'is_array' );
 
 	wp_send_json_success( array(
 		'posts'         => $posts,
@@ -90,6 +91,7 @@ function wp_media_categories_ajax_query_attachments() {
  * Updating categories in a post
  *
  * @since 1.0.2
+ * @return void
  */
 function wp_media_categories_ajax_update_attachment_taxonomies() {
 
@@ -112,12 +114,13 @@ function wp_media_categories_ajax_update_attachment_taxonomies() {
 		wp_send_json_error();
 	}
 
-	$post = get_post( $id, ARRAY_A );
+	$post = get_post( $id );
 
-	if ( 'attachment' != $post['post_type'] ) {
+	if ( ! $post instanceof WP_Post || 'attachment' !== $post->post_type ) {
 		wp_send_json_error();
 	}
 
+	$post = $post->to_array();
 	$post = apply_filters( 'attachment_fields_to_save', $post, $attachment_data );
 
 	wp_update_post( $post );
@@ -125,7 +128,8 @@ function wp_media_categories_ajax_update_attachment_taxonomies() {
 	$taxonomy = "media_category";
 
 	if ( isset( $attachment_data[ $taxonomy ] ) ) {
-		wp_set_object_terms( $id, array_map( 'trim', preg_split( '/,+/', $attachment_data[ $taxonomy ] ) ), $taxonomy, false );
+		$terms = preg_split( '/,+/', $attachment_data[ $taxonomy ] );
+		wp_set_object_terms( $id, false === $terms ? array() : array_map( 'trim', $terms ), $taxonomy, false );
 	} else if ( isset($_REQUEST['tax_input']) && isset( $_REQUEST['tax_input'][ $taxonomy ] ) ) {
 		wp_set_object_terms( $id, $_REQUEST['tax_input'][ $taxonomy ], $taxonomy, false );
 	} else {
@@ -146,8 +150,8 @@ function wp_media_categories_ajax_update_attachment_taxonomies() {
  *
  * @since 1.0.2
  *
- * @param array $query The original media query arguments.
- * @return array Modified media query arguments with taxonomy filters applied.
+ * @param array<string, mixed> $query The original media query arguments.
+ * @return array<string, mixed> Modified media query arguments with taxonomy filters applied.
  */
 function wp_media_categories_ajax_filter_query( $query ) {
 
