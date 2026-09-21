@@ -4,6 +4,10 @@ define( 'ABSPATH', dirname( __DIR__ ) . '/' );
 
 $GLOBALS['wpmc_test'] = array();
 
+require_once __DIR__ . '/class-wpmc-json-response.php';
+require_once __DIR__ . '/class-wp-post.php';
+require_once __DIR__ . '/class-wp-taxonomy.php';
+
 function wpmc_test_call( $name, $arguments = array() ) {
 	$GLOBALS['wpmc_test']['calls'][ $name ][] = $arguments;
 
@@ -45,7 +49,83 @@ function wp_set_object_terms() { return wpmc_test_call( __FUNCTION__, func_get_a
 
 class Walker {}
 class Walker_CategoryDropdown extends Walker {}
-class WP_Query {}
+class WP_Query {
+	/**
+	 * Queried posts.
+	 *
+	 * @var array<int, int>
+	 */
+	public $posts;
+	/**
+	 * Found post count.
+	 *
+	 * @var int
+	 */
+	public $found_posts;
+	/**
+	 * Maximum page count.
+	 *
+	 * @var int
+	 */
+	public $max_num_pages;
+
+	/**
+	 * Create a query using the fixture posts.
+	 *
+	 * @param array<string, mixed> $query Query arguments.
+	 */
+	public function __construct( $query = array() ) {
+		wpmc_test_call( 'WP_Query', array( $query ) );
+		$this->posts         = $GLOBALS['wpmc_test']['query_posts'] ?? array();
+		$this->found_posts   = count( $this->posts );
+		$this->max_num_pages = 1;
+	}
+}
+
+/** Get a fixture post. */
+function get_post() {
+	return wpmc_test_call( __FUNCTION__, func_get_args() );
+}
+
+/** Get the attachment post-type capabilities. */
+function get_post_type_object() {
+	return (object) array( 'cap' => (object) array( 'read_private_posts' => 'read_private_posts' ) );
+}
+
+/** Record a nonce check. */
+function check_ajax_referer() {
+	return wpmc_test_call( __FUNCTION__, func_get_args() );
+}
+
+/** Record a post update. */
+function wp_update_post() {
+	return wpmc_test_call( __FUNCTION__, func_get_args() );
+}
+
+/** Prepare an attachment using the fixture callback. */
+function wp_prepare_attachment_for_js() {
+	return wpmc_test_call( __FUNCTION__, func_get_args() );
+}
+
+/**
+ * Capture an error JSON response.
+ *
+ * @param mixed $data Response data.
+ * @throws WPMC_Json_Response Always captures the response.
+ */
+function wp_send_json_error( $data = null ) {
+	throw new WPMC_Json_Response( $data ); // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Test response payload is intentionally raw.
+}
+
+/**
+ * Capture a success JSON response.
+ *
+ * @param mixed $data Response data.
+ * @throws WPMC_Json_Response Always captures the response.
+ */
+function wp_send_json_success( $data = null ) {
+	throw new WPMC_Json_Response( $data ); // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Test response payload is intentionally raw.
+}
 class WP_Widget {
 	public $id_base;
 	public $number;

@@ -22,6 +22,7 @@ defined( 'ABSPATH' ) || exit;
  * Include the Media Categories files
  *
  * @since 0.1.0
+ * @return void
  */
 function _wp_media_categories() {
 

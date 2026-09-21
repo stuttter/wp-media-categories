@@ -13,6 +13,7 @@ defined( 'ABSPATH' ) || exit;
  * Categories widget class
  *
  * @since 0.1.0
+ * @extends WP_Widget<array<string, mixed>>
  */
 class WP_Media_Categories extends WP_Widget {
 
@@ -23,6 +24,13 @@ class WP_Media_Categories extends WP_Widget {
 		) );
 	}
 
+	/**
+	 * Display the media-category widget.
+	 *
+	 * @param array<string, mixed> $args     Widget display arguments.
+	 * @param array<string, mixed> $instance Widget settings.
+	 * @return void
+	 */
 	public function widget( $args, $instance ) {
 
 		$title = empty( $instance['title'] )
@@ -70,8 +78,10 @@ class WP_Media_Categories extends WP_Widget {
 			$media_cat_args['value_field']      = 'slug';
 
 			// Get the taxonomy slug
-			$slug = get_taxonomy( $media_cat_args['taxonomy'] )->rewrite['slug'];
-			$url  = home_url( $slug ) . '/';
+			$taxonomy = get_taxonomy( $media_cat_args['taxonomy'] );
+			$rewrite  = $taxonomy instanceof WP_Taxonomy ? $taxonomy->rewrite : false;
+			$slug     = is_array( $rewrite ) && isset( $rewrite['slug'] ) ? $rewrite['slug'] : 'media-category';
+			$url      = home_url( $slug ) . '/';
 
 			/**
 			 * Filter the arguments for the Categories widget drop-down.
@@ -124,6 +134,13 @@ class WP_Media_Categories extends WP_Widget {
 		echo $args['after_widget']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Theme-provided widget wrapper HTML must remain intact.
 	}
 
+	/**
+	 * Save the widget settings.
+	 *
+	 * @param array<string, mixed> $new_instance New settings.
+	 * @param array<string, mixed> $old_instance Previous settings.
+	 * @return array<string, mixed>
+	 */
 	public function update( $new_instance, $old_instance ) {
 		$instance                 = $old_instance;
 		$instance['title']        = wp_strip_all_tags( $new_instance['title'] );
@@ -160,6 +177,7 @@ class WP_Media_Categories extends WP_Widget {
 		</p>
 
 	<?php
+		return '';
 	}
 }
 
@@ -169,6 +187,7 @@ class WP_Media_Categories extends WP_Widget {
  * Calls 'widgets_init' action after all of the widgets have been registered.
  *
  * @since 1.6.0
+ * @return void
  */
 function wp_media_categories_register_widgets() {
 	register_widget( 'WP_Media_Categories' );

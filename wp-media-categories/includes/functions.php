@@ -14,18 +14,19 @@ defined( 'ABSPATH' ) || exit;
  *
  * @since 0.1.0
  *
- * @param array                $terms         Array of term IDs.
+ * @param array<int, int>      $terms         Array of term IDs.
  * @param object|string|null   $media_taxonomy Taxonomy object (from WordPress core),
  *                                             taxonomy name string, or null to use default 'media_category'.
+ * @return void
  */
 function wp_media_categories_update_count_callback( $terms = array(), $media_taxonomy = null ) {
 	global $wpdb;
 
 	// Get taxonomy name - handle both object and string for backward compatibility
-	if ( is_object( $media_taxonomy ) ) {
+	if ( is_object( $media_taxonomy ) && isset( $media_taxonomy->name ) && is_string( $media_taxonomy->name ) ) {
 		$taxonomy_name = sanitize_key( $media_taxonomy->name );
 	} else {
-		$taxonomy_name = sanitize_key( $media_taxonomy ?: 'media_category' );
+		$taxonomy_name = sanitize_key( is_string( $media_taxonomy ) ? $media_taxonomy : 'media_category' );
 	}
 
 	// select id & count from taxonomy
@@ -61,6 +62,8 @@ function wp_media_categories_update_count_callback( $terms = array(), $media_tax
  * Get the options to determine the list of media_category
  *
  * @since 0.1.0
+ * @param string $selected_value Selected category.
+ * @return array<string, mixed>
  */
 function wp_media_categories_get_media_category_options( $selected_value = '' ) {
 	return array(
@@ -83,6 +86,8 @@ function wp_media_categories_get_media_category_options( $selected_value = '' ) 
  * Manipulate the request to filter media without category
  *
  * @since 1.0.1
+ * @param array<string, mixed> $query_args Query arguments.
+ * @return array<string, mixed>
  */
 function wp_media_categories_no_category_request( $query_args = array() ) {
 
@@ -121,6 +126,7 @@ function wp_media_categories_no_category_request( $query_args = array() ) {
  * Check whether this search is for NO Category
  *
  * @since 0.1.0
+ * @return string
  */
 function wp_media_categories_get_no_category_search() {
 
@@ -160,6 +166,7 @@ function wp_media_categories_get_no_category_search() {
  * @since  0.1.0
  *
  * @param  WP_Query $query The query object used to find objects like posts
+ * @return void
  */
 function wp_media_categories_pre_get_posts( WP_Query $query ) {
 
@@ -197,15 +204,15 @@ function wp_media_categories_pre_get_posts( WP_Query $query ) {
  *
  * @since  1.0.2
  *
- * @param array  $fields The existing fields
- * @param object $post   The post
+ * @param array<string, mixed> $fields The existing fields.
+ * @param WP_Post|false        $post   The post, or false when unavailable.
  *
- * @return array
+ * @return array<string, mixed>
  */
 function wp_media_attachment_fields( $fields = array(), $post = false ) {
 
 	// Bail if not a media category
-	if ( empty( $fields[ 'media_category' ] ) ) {
+	if ( empty( $fields[ 'media_category' ] ) || ! $post instanceof WP_Post ) {
 		return $fields;
 	}
 
@@ -228,7 +235,7 @@ function wp_media_attachment_fields( $fields = array(), $post = false ) {
 	$terms = wp_get_object_terms( $post->ID, $taxonomy, $t[ 'args' ] );
 
 	// Bail if no terms
-	if ( empty( $terms ) ) {
+	if ( empty( $terms ) || is_wp_error( $terms ) || ! is_array( $terms ) ) {
 		return $fields;
 	}
 
@@ -279,7 +286,8 @@ function wp_media_attachment_fields( $fields = array(), $post = false ) {
  *
  * @since  1.0.2
  *
- * @param $args Arguments from shortcode
+ * @param array<string, mixed> $args Arguments from shortcode.
+ * @return string
  */
 function wp_media_categories_register_gallery_shortcode( $args = array() ) {
 
