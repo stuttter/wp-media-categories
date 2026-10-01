@@ -160,6 +160,7 @@ class WP_Media_Categories extends WP_Widget {
 		</p>
 
 	<?php
+		return null;
 	}
 }
 
