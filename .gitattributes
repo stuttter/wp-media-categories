@@ -12,6 +12,7 @@
 /phpcs-baseline.json export-ignore
 /phpcs.xml.dist export-ignore
 /phpstan-baseline.neon export-ignore
+/phpstan-wordpress-compat.stub export-ignore
 /phpstan.neon.dist export-ignore
 /phpunit.xml.dist export-ignore
 /scripts export-ignore
