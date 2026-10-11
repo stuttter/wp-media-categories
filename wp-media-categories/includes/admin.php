@@ -11,6 +11,8 @@ defined( 'ABSPATH' ) || exit;
 
 /**
  * Enqueue admin scripts and styles
+ *
+ * @return void
  */
 function wp_media_categories_enqueue_admin_scripts() {
 	global $pagenow;
@@ -75,6 +77,7 @@ function wp_media_categories_enqueue_admin_scripts() {
  * Add a category filter
  *
  * @since 0.1.0
+ * @return void
  */
 function wp_media_categories_add_category_filter() {
 	global $pagenow;
@@ -109,6 +112,7 @@ function wp_media_categories_add_category_filter() {
  * Add a filter for restrict_manage_posts for categories
  *
  * @since 0.1.0
+ * @return void
  */
 function wp_media_categories_restrict_manage_posts() {
 	wp_media_categories_add_category_filter();
@@ -125,7 +129,8 @@ function wp_media_categories_create_sendback_url() {
 
 	// Create a sendback url to report the results
 	$sendback = remove_query_arg( array( 'exported', 'untrashed', 'deleted', 'ids' ), wp_get_referer() );
-	if ( empty( $sendback ) || ( false === strpos( wp_get_referer(), 'upload.php' ) ) ) {
+	$referer  = wp_get_referer();
+	if ( empty( $sendback ) || false === $referer || false === strpos( $referer, 'upload.php' ) ) {
 		$sendback = admin_url( "upload.php" );
 	}
 
@@ -179,6 +184,8 @@ function wp_media_categories_create_sendback_url() {
  * Get an array of term values, which type is determined by the parameter
  *
  * @since 0.1.0
+ * @param string $keys Return IDs or slugs.
+ * @return array<int, int|string>
  */
 function wp_media_categories_get_terms_values( $keys = 'ids' ) {
 
@@ -190,6 +197,9 @@ function wp_media_categories_get_terms_values( $keys = 'ids' ) {
 	) );
 
 	$media_values = array();
+	if ( is_wp_error( $media_terms ) ) {
+		return $media_values;
+	}
 	foreach ( $media_terms as $key => $value ) {
 		$media_values[] = ( $keys === 'ids' )
 			? $key
@@ -223,6 +233,7 @@ function wp_media_categories_is_action_bulk_toggle() {
  * Enqueue Media Library bulk category actions.
  *
  * @since 0.1.0
+ * @return void
  */
 function wp_media_categories_custom_bulk_admin_footer() {
 	global $pagenow;
@@ -272,6 +283,7 @@ function wp_media_categories_custom_bulk_admin_footer() {
  * Handle the custom Bulk Action
  *
  * @since 0.1.0
+ * @return WP_Error|void
  */
 function wp_media_categories_custom_bulk_action() {
 
@@ -338,6 +350,7 @@ function wp_media_categories_custom_bulk_action() {
  * Display an admin notice on the Posts page after exporting
  *
  * @since 0.1.0
+ * @return void
  */
 function wp_media_categories_custom_bulk_admin_notices() {
 	global $pagenow;
@@ -354,6 +367,8 @@ function wp_media_categories_custom_bulk_admin_notices() {
  * Handle default category of attachments without category
  *
  * @since 0.1.0
+ * @param int $post_ID Attachment ID.
+ * @return WP_Error|void
  */
 function wp_media_categories_set_attachment_category( $post_ID ) {
 

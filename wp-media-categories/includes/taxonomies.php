@@ -13,6 +13,7 @@ defined( 'ABSPATH' ) || exit;
  * Register media taxonomies
  *
  * @since 0.1.0
+ * @return void
  */
 function wp_media_categories_register_media_taxonomy() {
 	register_taxonomy( 'media_category', array( 'attachment' ), array(

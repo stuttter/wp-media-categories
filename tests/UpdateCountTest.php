@@ -33,6 +33,19 @@ final class UpdateCountTest extends TestCase {
 
 		$this->assertSame( array( 'media_category', 'media_category' ), $database->prepared_arguments );
 	}
+
+	/** Confirm legacy falsy taxonomy strings still select the default taxonomy. */
+	public function test_defaults_to_the_media_category_taxonomy_for_empty_strings() {
+		foreach ( array( '', '0' ) as $taxonomy ) {
+			$this->reset_test_state();
+			$database        = new WP_Media_Categories_Test_Database();
+			$GLOBALS['wpdb'] = $database;
+
+			wp_media_categories_update_count_callback( array(), $taxonomy );
+
+			$this->assertSame( array( 'media_category', 'media_category' ), $database->prepared_arguments );
+		}
+	}
 }
 
 final class WP_Media_Categories_Test_Database {

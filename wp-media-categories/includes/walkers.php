@@ -16,6 +16,16 @@ defined( 'ABSPATH' ) || exit;
  */
 class WP_Media_Categories_Filter_Walker extends Walker_CategoryDropdown {
 
+	/**
+	 * Render one dropdown category.
+	 *
+	 * @param string               $output   Generated markup.
+	 * @param WP_Term              $category Category being rendered.
+	 * @param int                  $depth    Tree depth.
+	 * @param array<string, mixed> $args     Dropdown arguments.
+	 * @param int                  $id       Term ID.
+	 * @return void
+	 */
 	function start_el( &$output, $category, $depth = 0, $args = array(), $id = 0 ) {
 
 		$pad = str_repeat( '&nbsp;', $depth * 3 );
@@ -30,7 +40,7 @@ class WP_Media_Categories_Filter_Walker extends Walker_CategoryDropdown {
 			: $category->term_id;
 
 		$output .= '<option class="level-' . $depth . '" value="' . $value . '"';
-		if ( $value === (string) $args['selected'] ) {
+		if ( (string) ( $args['selected'] ?? '' ) === (string) $value ) {
 			$output .= ' selected="selected"';
 		}
 		$output .= '>';
@@ -51,12 +61,22 @@ class WP_Media_Categories_Filter_Walker extends Walker_CategoryDropdown {
  */
 class WP_Media_Categories_Media_Grid_Walker extends Walker_CategoryDropdown {
 
+	/**
+	 * Render one media-grid category.
+	 *
+	 * @param string               $output   Generated markup.
+	 * @param WP_Term              $category Category being rendered.
+	 * @param int                  $depth    Tree depth.
+	 * @param array<string, mixed> $args     Dropdown arguments.
+	 * @param int                  $id       Term ID.
+	 * @return void
+	 */
 	public function start_el( &$output, $category, $depth = 0, $args = array(), $id = 0 ) {
 		$pad      = str_repeat( '&nbsp;', $depth * 3 );
 		$cat_name = apply_filters( 'list_cats', $category->name, $category );
 
 		$term_name = $pad . esc_attr( $cat_name );
-		if ( $args['show_count'] ) {
+		if ( ! empty( $args['show_count'] ) ) {
 			$term_name .= '&nbsp;&nbsp;(' . absint( $category->count ) . ')';
 		}
 
@@ -82,16 +102,42 @@ class WP_Media_Categories_Checklist_Walker extends Walker {
 		'id'     => 'term_id'
 	);
 
+	/**
+	 * Open a nested checklist.
+	 *
+	 * @param string               $output Generated markup.
+	 * @param int                  $depth  Tree depth.
+	 * @param array<string, mixed> $args   Checklist arguments.
+	 * @return void
+	 */
 	public function start_lvl( &$output, $depth = 0, $args = array() ) {
 		$indent = str_repeat("\t", $depth);
 		$output .= "$indent<ul class='children'>\n";
 	}
 
+	/**
+	 * Close a nested checklist.
+	 *
+	 * @param string               $output Generated markup.
+	 * @param int                  $depth  Tree depth.
+	 * @param array<string, mixed> $args   Checklist arguments.
+	 * @return void
+	 */
 	public function end_lvl( &$output, $depth = 0, $args = array() ) {
 		$indent = str_repeat("\t", $depth);
 		$output .= "$indent</ul>\n";
 	}
 
+	/**
+	 * Render one checklist category.
+	 *
+	 * @param string               $output   Generated markup.
+	 * @param WP_Term              $category Category being rendered.
+	 * @param int                  $depth    Tree depth.
+	 * @param array<string, mixed> $args     Checklist arguments.
+	 * @param int                  $id       Term ID.
+	 * @return void
+	 */
 	public function start_el( &$output, $category, $depth = 0, $args = array(), $id = 0 ) {
 
 		// Get taxonomy
@@ -114,6 +160,15 @@ class WP_Media_Categories_Checklist_Walker extends Walker {
 		$output .= '</label>';
 	}
 
+	/**
+	 * Close one checklist category.
+	 *
+	 * @param string               $output   Generated markup.
+	 * @param WP_Term              $category Category being rendered.
+	 * @param int                  $depth    Tree depth.
+	 * @param array<string, mixed> $args     Checklist arguments.
+	 * @return void
+	 */
 	public function end_el( &$output, $category, $depth = 0, $args = array() ) {
 		$output .= "</li>\n";
 	}
