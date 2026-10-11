@@ -68,6 +68,32 @@ final class AjaxFilterTest extends TestCase {
 		$this->assertSame( array( array( 'edit_post', 7 ) ), $GLOBALS['wpmc_test']['calls']['current_user_can'] );
 	}
 
+	/** Confirm AJAX saves reject posts that are not attachments. */
+	public function test_ajax_save_rejects_a_non_attachment_post() {
+		$this->reset_test_state();
+		$_REQUEST = array(
+			'id'          => 7,
+			'attachments' => array( 7 => array( 'media_category' => 'photos' ) ),
+		);
+		$GLOBALS['wpmc_test']['returns']['current_user_can'] = true;
+
+		$post = new WP_Post();
+
+		$post->post_type = 'post';
+
+		$GLOBALS['wpmc_test']['returns']['get_post'] = $post;
+
+		try {
+			wp_media_categories_ajax_update_attachment_taxonomies();
+			$this->fail( 'Expected a JSON error response.' );
+		} catch ( WPMC_Json_Response $response ) {
+			$this->assertNull( $response->data );
+		}
+
+		$this->assertArrayNotHasKey( 'wp_update_post', $GLOBALS['wpmc_test']['calls'] );
+		$this->assertArrayNotHasKey( 'wp_set_object_terms', $GLOBALS['wpmc_test']['calls'] );
+	}
+
 	/** Confirm the AJAX query excludes false attachment preparations. */
 	public function test_ajax_query_keeps_only_prepared_attachment_arrays() {
 		$this->reset_test_state();
@@ -97,5 +123,21 @@ final class AjaxFilterTest extends TestCase {
 		$query = $GLOBALS['wpmc_test']['calls']['WP_Query'][0][0];
 		$this->assertSame( 'photo', $query['s'] );
 		$this->assertArrayNotHasKey( 'ignored', $query );
+	}
+
+	/** Confirm AJAX queries require the upload-files capability. */
+	public function test_ajax_query_rejects_users_without_upload_permission() {
+		$this->reset_test_state();
+		$GLOBALS['wpmc_test']['returns']['current_user_can'] = false;
+
+		try {
+			wp_media_categories_ajax_query_attachments();
+			$this->fail( 'Expected a JSON error response.' );
+		} catch ( WPMC_Json_Response $response ) {
+			$this->assertNull( $response->data );
+		}
+
+		$this->assertSame( array( array( 'upload_files' ) ), $GLOBALS['wpmc_test']['calls']['current_user_can'] );
+		$this->assertArrayNotHasKey( 'WP_Query', $GLOBALS['wpmc_test']['calls'] );
 	}
 }

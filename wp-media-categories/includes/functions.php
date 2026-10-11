@@ -205,14 +205,14 @@ function wp_media_categories_pre_get_posts( WP_Query $query ) {
  * @since  1.0.2
  *
  * @param array<string, mixed> $fields The existing fields.
- * @param WP_Post|false        $post   The post, or false when unavailable.
+ * @param object|false         $post   The post, or false when unavailable.
  *
  * @return array<string, mixed>
  */
 function wp_media_attachment_fields( $fields = array(), $post = false ) {
 
 	// Bail if not a media category
-	if ( empty( $fields[ 'media_category' ] ) || ! $post instanceof WP_Post ) {
+	if ( empty( $fields[ 'media_category' ] ) || ! is_object( $post ) || ! isset( $post->ID ) ) {
 		return $fields;
 	}
 
