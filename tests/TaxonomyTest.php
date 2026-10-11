@@ -108,4 +108,28 @@ final class TaxonomyTest extends TestCase {
 
 		$this->assertStringContainsString( 'value="photos" selected="selected"', $output );
 	}
+
+	/** Confirm the filter walker selects a requested numeric term ID. */
+	public function test_filter_walker_selects_the_requested_term_id() {
+		$walker   = new WP_Media_Categories_Filter_Walker();
+		$output   = '';
+		$category = (object) array(
+			'term_id' => 7,
+			'name'    => 'Photos',
+			'slug'    => 'photos',
+			'count'   => 2,
+		);
+
+		$walker->start_el(
+			$output,
+			$category,
+			0,
+			array(
+				'selected' => '7',
+				'value'    => 'term_id',
+			)
+		);
+
+		$this->assertStringContainsString( 'value="7" selected="selected"', $output );
+	}
 }
