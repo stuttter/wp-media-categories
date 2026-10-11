@@ -12,7 +12,7 @@ permissions:
 
 jobs:
   validate:
-    uses: stuttter/.github/.github/workflows/wordpress-plugin-ci.yml@976095f3cee7a4ed9a5d936bd7ff113e60bef1b4
+    uses: stuttter/.github/.github/workflows/wordpress-plugin-ci.yml@ffca0c04075df2b2ccb495e38cac6d39bf975168
     with:
       php-versions: '["7.4","8.0","8.2","8.4"]'
       quality-php-version: '8.4'
