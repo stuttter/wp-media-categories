@@ -65,9 +65,13 @@ final class WidgetOutputTest extends TestCase {
 		);
 		$output = ob_get_clean();
 
-		$this->assertStringContainsString( 'custom-media\\/', $output );
-		unset( $GLOBALS['wpmc_test']['taxonomy'] );
+		try {
+			$this->assertStringContainsString( 'custom-media\\/', $output );
+		} finally {
+			unset( $GLOBALS['wpmc_test']['taxonomy'] );
+		}
 	}
+
 	public function test_dropdown_redirect_url_is_json_encoded_for_javascript() {
 		$widget         = new WP_Media_Categories();
 		$widget->id_base = 'wp_media_categories_categories';

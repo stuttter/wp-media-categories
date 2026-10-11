@@ -3,6 +3,12 @@
 use PHPUnit\Framework\TestCase;
 
 final class AjaxFilterTest extends TestCase {
+	/** Reset request state after each test. */
+	protected function tearDown(): void {
+		$_REQUEST = array();
+		parent::tearDown();
+	}
+
 	private function reset_test_state() {
 		$GLOBALS['wpmc_test'] = array();
 	}
@@ -58,6 +64,8 @@ final class AjaxFilterTest extends TestCase {
 
 		$this->assertSame( 'attachment', $GLOBALS['wpmc_test']['calls']['wp_update_post'][0][0]['post_type'] );
 		$this->assertSame( array( 'photos', 'artwork' ), $GLOBALS['wpmc_test']['calls']['wp_set_object_terms'][0][1] );
+		$this->assertSame( array( array( 'update-post_7', 'nonce' ) ), $GLOBALS['wpmc_test']['calls']['check_ajax_referer'] );
+		$this->assertSame( array( array( 'edit_post', 7 ) ), $GLOBALS['wpmc_test']['calls']['current_user_can'] );
 	}
 
 	/** Confirm the AJAX query excludes false attachment preparations. */

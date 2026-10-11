@@ -3,11 +3,16 @@
 /**
  * WordPress retains integer asset versions and stringifies them in URLs.
  *
- * @param string                    $handle
- * @param string                    $src
- * @param array<int, string>        $deps
- * @param string|int|bool|null      $ver
- * @param array<string, mixed>|bool $args
+ * @phpstan-param non-empty-string $handle
+ * @phpstan-param string $src
+ * @phpstan-param non-empty-string[] $deps
+ * @phpstan-param string|int|bool|null $ver
+ * @phpstan-param array{
+ *     in_footer?: bool,
+ *     strategy?: 'async'|'defer',
+ *     fetchpriority?: 'low'|'auto'|'high',
+ *     module_dependencies?: array<non-empty-string|array{ id: non-empty-string, ... }>,
+ * }|bool $args
  * @return void
  */
 function wp_enqueue_script( $handle, $src = '', $deps = array(), $ver = false, $args = array() ) {}
@@ -17,7 +22,7 @@ function wp_enqueue_script( $handle, $src = '', $deps = array(), $ver = false, $
  *
  * @param string               $handle
  * @param string               $src
- * @param array<int, string>   $deps
+ * @param string[]             $deps
  * @param string|int|bool|null $ver
  * @param string               $media
  * @return void

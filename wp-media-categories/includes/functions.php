@@ -26,7 +26,7 @@ function wp_media_categories_update_count_callback( $terms = array(), $media_tax
 	if ( is_object( $media_taxonomy ) && isset( $media_taxonomy->name ) && is_string( $media_taxonomy->name ) ) {
 		$taxonomy_name = sanitize_key( $media_taxonomy->name );
 	} else {
-		$taxonomy_name = sanitize_key( is_string( $media_taxonomy ) ? $media_taxonomy : 'media_category' );
+		$taxonomy_name = sanitize_key( is_string( $media_taxonomy ) && $media_taxonomy ? $media_taxonomy : 'media_category' );
 	}
 
 	// select id & count from taxonomy
